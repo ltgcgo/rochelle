@@ -1,0 +1,8 @@
+#!/bin/bash
+args=( "$@" )
+if [ -f "$(which deno)" ] ; then
+	shx esdeno ${args[@]}
+elif [ -f "$(which esbuild)" ] ; then
+	esbuild ${args[@]}
+fi
+exit

@@ -1,0 +1,7 @@
+*.swp
+.zcompdump
+.zsh_history
+build
+*.map
+dist/*.js
+dist/*.css
