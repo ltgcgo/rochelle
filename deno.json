@@ -1,6 +1,6 @@
 {
 	"name": "@ltgc/octavia",
-	"version": "0.1",
+	"version": "0.2",
 	"exports": {
 		"./textEmit": "./dist/textEmit.mjs",
 		"./textRead": "./dist/textRead.mjs",
