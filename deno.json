@@ -1,0 +1,30 @@
+{
+	"name": "@ltgc/octavia",
+	"version": "0.1",
+	"exports": {
+		"./textEmit": "./dist/textEmit.mjs",
+		"./textRead": "./dist/textRead.mjs",
+	},
+	"publish": {
+		"include": [
+			"dist/**",
+			"README.md"
+		]
+	},
+	"fmt": {
+		"useTabs": true,
+		"lineWidth": 200,
+		"indentWidth": 4,
+		"semiColons": true,
+		"exclude": [
+			"*"
+		]
+	},
+	"lint": {
+		"exclude": [
+			"*"
+		]
+	},
+	"nodeModulesDir": false,
+	"npmRegistry": "http://127.0.0.1:80/"
+}
