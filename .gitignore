@@ -5,3 +5,8 @@ build
 *.map
 dist/*.js
 dist/*.css
+dist/*.ts
+dist/*.mts
+
+!dist/*.mjs.map
+!dist/*.d.mts

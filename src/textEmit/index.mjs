@@ -3,6 +3,8 @@
 
 // Takes a stream, and emit decoded text
 
+// TextEmit is now deprecated, as it has the potential to overwhelm the stream consumer.
+
 "use strict";
 
 const encodings = ["utf-8", "utf-16", "utf-16be"];

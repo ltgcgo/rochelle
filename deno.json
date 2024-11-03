@@ -1,6 +1,6 @@
 {
 	"name": "@ltgc/rochelle",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"exports": {
 		"./textEmit": "./dist/textEmit.mjs",
 		"./textRead": "./dist/textRead.mjs",
