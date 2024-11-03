@@ -19,6 +19,7 @@ pkgs.mkShell {
 		git
 		nano
 		curl
+		gnupg
 		gzip
 		zopfli
 		brotli
@@ -26,6 +27,7 @@ pkgs.mkShell {
 		deno
 		lightningcss
 		esbuild
+		minify
 	];
 	GIT_EDITOR = "${pkgs.nano}/bin/nano";
 	shellHook = ''
