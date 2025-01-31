@@ -1,8 +1,6 @@
 // Copyright 2024 (C) Lightingale Community
 // Licensed under GNU LGPL 3.0
 
-"use strict";
-
 /**
  * Generic stream enqueuing, merging and splitting.
  * @module
@@ -17,7 +15,7 @@ export class StreamQueue {
 	 * @param underlyingSource Define the behaviour of the result stream. Only "start" and "cancel" are available.
 	 * @param queuingStrategy Optionally define the queuing strategy of the result stream. Will affect the backpressure.
      */
-	constructor(underlyingSource: object, queuingStrategy: object = {});
+	constructor(underlyingSource: object, queuingStrategy: object);
 	/**
 	 * Enqueue a chunk into the stream with apparent backpressure. Will only resolve when the internal backpressure is relieved.
 	 * @param chunk The chunk to enqueue.
@@ -60,17 +58,17 @@ export class StreamServe {
 	close(): void;
 	closed: boolean;
 	closure: Promise<void>;
-};
+}
 
 /**
  * Normalize chunks of a byte stream to a specific size.
  */
 export class ChokerStream {
-	constructor(maxChunkSize: number = 1024, alwaysCopy: boolean = false);
+	constructor(maxChunkSize: number, alwaysCopy: boolean);
 	alwaysCopy: boolean;
 	chunkSize: number;
 	source: ReadableStream;
 	sink: ReadableStream;
 	attach(source: ReadableStream): void;
 	attached: boolean;
-};
+}
