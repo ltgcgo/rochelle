@@ -4,4 +4,4 @@
 export default class TextReader {
 	static lineRaw(stream: ReadableStream, splitMode: number): ReadableStream<Uint8Array>;
 	static line(stream: ReadableStream, splitMode: number, label: string): ReadableStream<string>;
-};
+}
