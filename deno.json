@@ -1,8 +1,8 @@
 {
 	"name": "@ltgc/rochelle",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"exports": {
-		"./textRead": "./dist/textRead.mjs",
+		"./textRead": "./dist/textRead.d.mts",
 	},
 	"publish": {
 		"include": [

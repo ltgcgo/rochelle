@@ -53,8 +53,8 @@ if [ -d "./src" ]; then
 			echo "Building JS module \"${dir}\"..."
 			shx live $dir --minify $1 > /dev/null
 			sed -zi "$substRules" "dist/${dir}.mjs"
-			if [ -f "src/${dir}/index.d.ts" ] ; then
-				cp "src/${dir}/index.d.ts" "dist/${dir}.d.ts"
+			if [ -f "src/${dir}/index.d.mts" ] ; then
+				cp "src/${dir}/index.d.mts" "dist/${dir}.d.mts"
 			fi
 		fi
 	done
