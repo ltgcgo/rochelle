@@ -8,6 +8,10 @@
 
 /**
  * Asynchronously enqueue readable streams, and combine multiple readable streams together.
+ * ```js
+ * let streamQueue = new StreamQueue();
+ * streamQueue.pipeFrom(request.body);
+ * ```
  */
 export class StreamQueue {
 	/**
@@ -45,6 +49,9 @@ export class StreamQueue {
 
 /**
  * Split one readable stream into multiple.
+ * ```js
+ * let streamServer = new StreamServe(request.body);
+ * ```
  */
 export class StreamServe {
 	attach(source: ReadableStream): void;
@@ -62,6 +69,14 @@ export class StreamServe {
 
 /**
  * Normalize chunks of a byte stream to a specific size.
+ * ```js
+ * let choked = new ChokerStream(65536, false);
+ * choked.attach(incomingReadable);
+ * let request = await fetch("https://example.com/", {
+ * 	method: "post",
+ * 	body: choked.source
+ * });
+ * ```
  */
 export class ChokerStream {
 	constructor(maxChunkSize: number, alwaysCopy: boolean);
