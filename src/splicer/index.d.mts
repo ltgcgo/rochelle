@@ -41,7 +41,7 @@ export class StreamQueue {
 	error(err: any): void;
 	/** The result stream. */
 	readable: ReadableStream;
-};
+}
 
 /**
  * Split one readable stream into multiple.
