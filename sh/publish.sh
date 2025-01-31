@@ -2,5 +2,5 @@
 echo "Building..."
 shx build
 echo "Publishing to JSR..."
-deno publish --config ./deno.json
+deno publish --allow-dirty --config ./deno.json
 exit
