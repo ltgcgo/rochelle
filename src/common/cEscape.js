@@ -99,7 +99,6 @@ const textEscape = (text, escapeLevel = 0) => {
 	// Characters exceeding BMP will change the escaping flow
 };
 
-self.textUnescape = textUnescape;
 self.TextEscape = textEscape;
 
 export {

@@ -18,12 +18,45 @@ export default class DsvParser {
 		let dsvType = mode & this.MASK_TYPE;
 		let dsvData = mode & this.MASK_DATA;
 		let lineNo = 0, colNo = 0;
-		let lineData = [""], cellNo = 0;
+		let lineData, cellNo = 0;
+		let quoteType;
 		let rawStream = stream.getReader();
 		return new ReadableStream({
 			"pull": async (controller) => {
 				let {value, done} = await rawStream.read();
 				if (typeof value === "string") {
+					switch (dsvType) {
+						case this.TYPE_TSV: {
+							lineData = [];
+							try {
+								for (let cellData of value.split("\t")) {
+									switch (dsvData) {
+										case this.DATA_TEXT: {
+											lineData.push(textUnescape(cellData));
+											break;
+										};
+										case this.DATA_JSON: {
+											lineData.push(JSON.parse(cellData));
+											break;
+										};
+										default: {
+											throw(new TypeError(`Unknown DSV value type ${dsvType}`));
+										};
+									};
+								};
+							} catch (err) {
+								console.debug(`The following error appeared when parsing on line ${lineNo + 1}.`);
+								console.error(err);
+							};
+							break;
+						};
+						case this.TYPE_CSV: {
+							break;
+						};
+						default: {
+							throw(new TypeError(`Unknown DSV type ${dsvType}`));
+						};
+					};
 					controller.enqueue(lineData);
 					lineNo ++;
 				};
