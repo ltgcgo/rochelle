@@ -65,6 +65,7 @@ const textUnescape = (text) => {
 					} else {
 						throw(new Error(`Invalid escape identifier "${e0}" at index ${i0}`));
 					};
+					escaped = false;
 					continue;
 				};
 			};
