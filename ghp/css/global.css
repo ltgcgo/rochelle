@@ -1,3 +1,7 @@
 .column.column-option {
 	max-width: max-content;
 }
+.verbose-text {
+	white-space: pre;
+	tab-size: 4;
+}

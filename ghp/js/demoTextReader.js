@@ -1,0 +1,1 @@
+../../dist/demoTextReader.js

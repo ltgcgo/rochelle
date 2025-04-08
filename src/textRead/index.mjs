@@ -17,7 +17,7 @@ let TextReader = class {
 	static SPLIT_UTF_16_LE = 1;
 	static SPLIT_UTF_16_BE = 2;
 	static lineRaw(stream, splitMode = 0) {
-		if (splitMode?.constructor != Number ||
+		if (splitMode?.constructor !== Number ||
 			splitMode < 0 ||
 			splitMode >= encodings.length) {
 			throw(new TypeError("Invalid split mode"));
@@ -25,7 +25,7 @@ let TextReader = class {
 		if (splitMode) {
 			throw(new Error("UTF-16LE/BE currently not implemented"));
 		};
-		if (!stream || stream?.constructor != ReadableStream) {
+		if (!stream || stream?.constructor !== ReadableStream) {
 			throw(new TypeError("Not a readable stream"));
 		};
 		let reader = stream.getReader();
@@ -56,7 +56,7 @@ let TextReader = class {
 						let commitNow = false;
 						switch (e) {
 							case 10: {
-								if (lastUnit == 13) {
+								if (lastUnit === 13) {
 									lastPtr ++;
 								} else {
 									commitNow = true;
@@ -104,7 +104,7 @@ let TextReader = class {
 					if (finished) {
 						//console.debug(`Stream finished.`);
 						// Detect remaining buffer
-						if (lastPtr != ptr) {
+						if (lastPtr !== ptr && chunk) {
 							bufferBuilder.push(chunk.subarray(lastPtr, ptr));
 						};
 						// Commit all remaining buffer
