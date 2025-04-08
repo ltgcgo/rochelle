@@ -1,7 +1,13 @@
 .column.column-option {
 	max-width: max-content;
 }
-.verbose-text {
+.verbose-text, .functional-text {
 	white-space: pre-wrap;
 	tab-size: 4;
+}
+.functional-text {
+	font-family: monospace;
+}
+.contain-overflow {
+	overflow-x: scroll;
 }
