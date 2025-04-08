@@ -13,9 +13,9 @@ export default class TextReader {
 	/**
 	 * Read each line as raw bytes.
 	 */
-	static lineRaw(stream: ReadableStream, splitMode: number): ReadableStream<Uint8Array>;
+	static lineRaw(stream: ReadableStream, splitMode?: number): ReadableStream<Uint8Array>;
 	/**
 	 * Read each line as decoded string.
 	 */
-	static line(stream: ReadableStream, splitMode: number, label: string): ReadableStream<string>;
+	static line(stream: ReadableStream, splitMode?: number, label?: string): ReadableStream<string>;
 }
