@@ -11,7 +11,7 @@ export class DSVParser {
 	static MASK_DATA: number;
 	/** An [RFC 4180-compliant](https://datatracker.ietf.org/doc/html/rfc4180) CSV. */
 	static TYPE_CSV: number;
-	/** A TSV augmented with C escape sequences. */
+	/** A TSV augmented with C escape sequences. \t and \n must be escaped at all times. */
 	static TYPE_TSV: number;
 	/** String as values. */
 	static DATA_TEXT: number;
