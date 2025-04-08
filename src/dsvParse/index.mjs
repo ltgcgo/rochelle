@@ -51,6 +51,9 @@ export default class DsvParser {
 							break;
 						};
 						case this.TYPE_CSV: {
+							if (dsvData !== this.DATA_TEXT) {
+								throw(new TypeError(`Invalid type ${dsvType} for CSV, only plain text is allowed`));
+							} else {};
 							break;
 						};
 						default: {

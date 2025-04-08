@@ -40,7 +40,7 @@ const loadStream = async (stream, type) => {
 	let tableHead = newElement("thead");
 	let tableBody = newElement("tbody");
 	tableRenderer.append(newElement("div", [
-		newElement("table", [tableHead, tableBody], ["table", "is-striped"])
+		newElement("table", [tableHead, tableBody], ["table", "is-striped", "functional-text"])
 	], ["table-container"]));
 	try {
 		let lineNo = 0;
@@ -84,7 +84,7 @@ const openFile = async () => {
 	clearTimeout(urlLoader);
 	try {
 		let fileBlob = await fileOpen(propsFile);
-		await loadStream(await fileBlob.stream(), fileBlob.name.toLowerCase().substring(targetUrl.length - 4) === ".tsv" ? DsvParser.TYPE_TSV : DsvParser.TYPE_CSV);
+		await loadStream(await fileBlob.stream(), fileBlob.name.toLowerCase().substring(fileBlob.name.length - 4) === ".tsv" ? DsvParser.TYPE_TSV : DsvParser.TYPE_CSV);
 		tableRenderer.appendChild(newElement("p", `DSV loaded from disk: ${fileBlob.name}`, ['has-text-success']));
 	} catch (err) {
 		tableRenderer.appendChild(newElement("p", [`${err}\n\t${err.stack.replaceAll("\n", "\n\t")}`], ['has-text-danger', 'verbose-text']));
