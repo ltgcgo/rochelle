@@ -42,9 +42,10 @@ const loadStream = async (stream, type) => {
 	tableRenderer.append(newElement("div", [
 		newElement("table", [tableHead, tableBody], ["table", "is-striped", "functional-text"])
 	], ["table-container"]));
+	let splitStream = stream.tee();
 	try {
 		let lineNo = 0;
-		for await (let line of DsvParser.parse(type | DsvParser.DATA_TEXT, TextReader.line(stream))) {
+		for await (let line of DsvParser.parse(type | DsvParser.DATA_TEXT, TextReader.line(splitStream[0]))) {
 			let tableLine = newElement("tr");
 			if (lineNo === 0) {
 				tableHead.append(tableLine);
@@ -58,6 +59,9 @@ const loadStream = async (stream, type) => {
 				};
 			};
 			lineNo ++;
+		};
+		for await (let obj of DsvParser.parseObjects(type | DsvParser.DATA_TEXT, TextReader.line(splitStream[1]))) {
+			console.debug(obj);
 		};
 	} catch (err) {
 		tableRenderer.appendChild(newElement("p", [`${err}\n\t${err.stack.replaceAll("\n", "\n\t")}`], ['has-text-danger', 'verbose-text']));

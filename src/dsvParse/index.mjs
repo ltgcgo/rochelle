@@ -36,7 +36,7 @@ export default class DsvParser {
 											break;
 										};
 										case this.DATA_JSON: {
-											lineData.push(JSON.parse(cellData));
+											lineData.push(lineNo === 0 ? textUnescape(cellData) : JSON.parse(cellData));
 											break;
 										};
 										default: {
@@ -62,6 +62,36 @@ export default class DsvParser {
 					};
 					controller.enqueue(lineData);
 					lineNo ++;
+				};
+				if (done) {
+					controller.close();
+				};
+			}
+		});
+	};
+	static parseObjects(mode, stream) {
+		let lineNo = 0, textStream = this.parse(mode, stream).getReader();
+		let fields;
+		return new ReadableStream({
+			"start": async (controller) => {
+				let {value, done} = await textStream.read();
+				if (typeof value?.length === "number") {
+					fields = value;
+				};
+				if (done) {
+					controller.close();
+				};
+			},
+			"pull": async (controller) => {
+				let {value, done} = await textStream.read();
+				if (typeof value?.length === "number") {
+					let obj = {};
+					for (let i = 0; i < value.length; i ++) {
+						if (value[i]) {
+							obj[fields[i]] = value[i];
+						};
+					};
+					controller.enqueue(obj);
 				};
 				if (done) {
 					controller.close();
