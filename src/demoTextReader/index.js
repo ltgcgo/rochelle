@@ -34,7 +34,7 @@ const loadStream = async (stream) => {
 	};
 	try {
 		for await (let line of TextReader.line(stream)) {
-			textRenderer.appendChild(createP(line));
+			textRenderer.appendChild(createP(line, ['verbose-text']));
 		};
 	} catch (err) {
 		textRenderer.appendChild(createP(`${err}\n\t${err.stack.replaceAll("\n", "\n\t")}`, ['has-text-danger', 'verbose-text']));

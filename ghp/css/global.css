@@ -2,6 +2,6 @@
 	max-width: max-content;
 }
 .verbose-text {
-	white-space: pre;
+	white-space: pre-wrap;
 	tab-size: 4;
 }
