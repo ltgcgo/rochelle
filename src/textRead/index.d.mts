@@ -2,6 +2,11 @@
 // Licensed under GNU LGPL 3.0
 
 /**
+* Filling in for the gaping hole of JavaScript, where reading text by lines is present everywhere else.
+* @module
+*/
+
+/**
  * A class exposing static methods to read text streams on a line-by-line basis.
  * ```js
  * for await (let line of TextReader.line(someReadableStream)) {
