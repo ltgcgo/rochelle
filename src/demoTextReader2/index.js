@@ -33,8 +33,12 @@ const loadStream = async (stream) => {
 		textRenderer.children[0].remove();
 	};
 	try {
-		for await (let line of TextReader.chunk(stream)) {
-			textRenderer.appendChild(createP(line, ['verbose-text']));
+		/*let vanillaImpl = new TextDecoderStream();
+		stream.pipeTo(vanillaImpl.writable);*/
+		console.info(`Decoding started.`);
+		for await (let line of TextReader.chunk(stream)/*vanillaImpl.readable*/) {
+			console.debug(line);
+			textRenderer.appendChild(createP(`Decoded bytes: ${line.length}\n${line.substring(0, 512)}${line.length > 512 ? " ..." : ""}`, ['verbose-text']));
 		};
 	} catch (err) {
 		textRenderer.appendChild(createP(`${err}\n\t${err.stack.replaceAll("\n", "\n\t")}`, ['has-text-danger', 'verbose-text']));
