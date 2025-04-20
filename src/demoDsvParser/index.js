@@ -47,21 +47,22 @@ const loadStream = async (stream, type) => {
 		let lineNo = 0;
 		for await (let line of DsvParser.parse(type | DsvParser.DATA_TEXT, TextReader.line(splitStream[0]))) {
 			let tableLine = newElement("tr");
-			if (lineNo === 0) {
-				tableHead.append(tableLine);
+			let tableTag = lineNo === 0 ? "th" : "td";
+			tableHead.append(tableLine);
+			if (typeof line !== "undefined") {
 				for (let cell of line) {
-					tableLine.append(newElement("th", [cell]));
-				};
-			} else {
-				tableBody.append(tableLine);
-				for (let cell of line) {
-					tableLine.append(newElement("td", [cell]));
+					tableLine.append(newElement(tableTag, [cell]));
 				};
 			};
 			lineNo ++;
 		};
+		if (self.parsedList) {
+			delete self.parsedList;
+		};
+		self.parsedList = [];
 		for await (let obj of DsvParser.parseObjects(type | DsvParser.DATA_TEXT, TextReader.line(splitStream[1]))) {
 			console.debug(obj);
+			parsedList.push(obj);
 		};
 	} catch (err) {
 		tableRenderer.appendChild(newElement("p", [`${err}\n\t${err.stack.replaceAll("\n", "\n\t")}`], ['has-text-danger', 'verbose-text']));
