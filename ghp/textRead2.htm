@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="200" charset="utf-8" />
+	<title>Text Reader - Rochelle demos</title>
+	<meta content="true" name="HandheldFriendly" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+	<meta name="author" content="Lumière Élevé" />
+	<meta name="description" content="Demonstrating the use of Rochelle." />
+	<meta name="og:title" content="Text Reader - Rochelle demos (OpenGraph)" />
+	<meta name="og:description" content="Demonstrating the use of Rochelle." />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Text Reader - Rochelle demos (Twitter)" />
+	<meta name="twitter:description" content="Demonstrating the use of Rochelle." />
+	<meta name="robots" content="index,follow" />
+	<meta name="keywords" content="Rochelle,Lightingale" />
+	<link rel="stylesheet" href="./css/bulma.min.css" />
+	<link rel="stylesheet" href="./css/global.css" />
+</head>
+<body>
+	<div class="container is-max-desktop">
+		<section class="hero">
+			<div class="hero-body">
+				<p class="title">Text Reader</p>
+				<p class="subtitle">Try to import some text from URLs or files below, and see how the text reader interprets.</p>
+			</div>
+		</section>
+		<div class="columns is-multiline is-mobile is-vcentered">
+			<div class="column">
+				<div class="control">
+					<input id="fetchUrl" class="input functional-text" type="text" placeholder="Try to fetch a file from a URL!" value="./sample/longText.txt" />
+				</div>
+			</div>
+			<div class="column column-option">
+				<button id="doFetch" class="button is-link">Fetch!</button>
+			</div>
+			<div class="column column-option">
+				<button id="doOpen" class="button is-info">Open file!</button>
+			</div>
+		</div>
+		<div id="textRenderer" class="content has-radius-normal has-background-dark has-text-dark-invert px-5 py-4">
+			<p>Load something!</p>
+		</div>
+	</div>
+	<script src="./js/demoTextReader2.js"></script>
+</body>

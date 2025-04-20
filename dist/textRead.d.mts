@@ -2,7 +2,7 @@
 // Licensed under GNU LGPL 3.0
 
 /**
-* Filling in for the gaping hole of JavaScript, where reading text by lines is present everywhere else.
+* Read text from raw byte streams. Filling in for the gaping hole of JavaScript, where reading text by lines is present everywhere else.
 * @module
 */
 
@@ -16,15 +16,27 @@
  */
 export default class TextReader {
 	/**
-	 * Read each line as raw bytes.
-	 * @param stream The incoming raw byte stream.
-	 * @param splitMode How should the bytes be split.
-	 */
+	* Read each line as raw bytes.
+	* @param stream The incoming raw byte stream.
+	* @param splitMode How should the bytes be split.
+	*/
 	static lineRaw(stream: ReadableStream, splitMode?: number): ReadableStream<Uint8Array>;
 	/**
-	 * Read each line as decoded string.
-	 * @param stream The incoming raw byte stream.
-	 * @param label The text encoding label of the incoming raw stream.
-	 */
+	* Read each line as decoded string.
+	* @param stream The incoming raw byte stream.
+	* @param label The text encoding label of the incoming raw stream.
+	*/
 	static line(stream: ReadableStream, label?: string): ReadableStream<string>;
+	/**
+	* Read the byte stream as chunks of raw bytes.
+	* @param stream The incoming raw byte stream.
+	* @param collapsed The collapsed text encoding label of the incoming raw stream.
+	*/
+	static chunkRaw(stream: ReadableStream, collapsed?: string): ReadableStream<Uint8Array>;
+	/**
+	* Read the byte stream as decoded chunks of text.
+	* @param stream The incoming raw byte stream.
+	* @param label The text encoding label of the incoming raw stream.
+	*/
+	static chunk(stream: ReadableStream, label?: string): ReadableStream<string>;
 }
