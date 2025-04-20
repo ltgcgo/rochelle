@@ -5,7 +5,7 @@
 
 "use strict";
 
-const encodings = ["utf-8", "utf-16", "utf-16be"];
+import TextEncoding from "../textEncoding/index.mjs";
 
 let commitData = (controller, data) => {
 	controller.unsent = false;
@@ -13,20 +13,16 @@ let commitData = (controller, data) => {
 };
 
 let TextReader = class {
-	static SPLIT_UTF_8 = 0;
-	static SPLIT_UTF_16_LE = 1;
-	static SPLIT_UTF_16_BE = 2;
 	static lineRaw(stream, splitMode = 0) {
-		if (splitMode?.constructor !== Number ||
-			splitMode < 0 ||
-			splitMode >= encodings.length) {
-			throw(new TypeError("Invalid split mode"));
+		if (typeof splitMode !== "number" ||
+			splitMode < 0 || splitMode > 7) {
+			throw(new TypeError("Invalid split mode."));
 		};
-		if (splitMode) {
-			throw(new Error("UTF-16LE/BE currently not implemented"));
+		if (TextEncoding.getUnitSize(splitMode)) {
+			throw(new Error("Multi-byte currently not supported."));
 		};
 		if (!stream || stream?.constructor !== ReadableStream) {
-			throw(new TypeError("Not a readable stream"));
+			throw(new TypeError("Not a readable stream."));
 		};
 		let reader = stream.getReader();
 		let chunk, finished = false;
@@ -136,9 +132,11 @@ let TextReader = class {
 		}, new ByteLengthQueuingStrategy({"highWaterMark": 256}));
 		return sink;
 	};
-	static line(stream, splitMode = 0, label) {
-		let rawStream = this.lineRaw(stream, splitMode).getReader();
-		let decoder = new TextDecoder(label || encodings[splitMode]);
+	static line(stream, label = "utf-8") {
+		let collapsed = TextEncoding.collapse(label);
+		let bei = TextEncoding.indicator(collapsed);
+		let rawStream = this.lineRaw(stream, bei).getReader();
+		let decoder = new TextDecoder(collapsed);
 		return new ReadableStream({
 			"pull": async (controller) => {
 				let {value, done} = await rawStream.read();

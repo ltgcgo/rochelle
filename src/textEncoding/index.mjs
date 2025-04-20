@@ -12,6 +12,7 @@ import collapsedBEI from "./bei.json";
 
 export default class TextEncoding {
 	static BYTE_1 = 0;
+	static BYTE_1_VL = 1;
 	static BYTE_2_LE = 2;
 	static BYTE_2_BE = 3;
 	static BYTE_3_LE = 4;
@@ -25,7 +26,7 @@ export default class TextEncoding {
 		return indicator >> 1;
 	};
 	static isBigEndian(indicator) {
-		return indicator & 1;
+		return (indicator & 1) === 1;
 	};
 	static collapse(label) {
 		let collapsed = collapsedFromLabels[label];
