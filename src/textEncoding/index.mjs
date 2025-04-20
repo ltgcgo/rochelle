@@ -23,7 +23,7 @@ export default class TextEncoding {
 		if (indicator > 7) {
 			throw(new RangeError("Cannot decode encodings with more than 4 bits per unit."));
 		};
-		return indicator >> 1;
+		return (indicator >> 1) + 1;
 	};
 	static isBigEndian(indicator) {
 		return (indicator & 1) === 1;

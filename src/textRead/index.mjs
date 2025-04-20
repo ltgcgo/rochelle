@@ -18,12 +18,11 @@ let TextReader = class {
 			splitMode < 0 || splitMode > 7) {
 			throw(new TypeError("Invalid split mode."));
 		};
-		if (TextEncoding.getUnitSize(splitMode)) {
-			throw(new Error("Multi-byte currently not supported."));
-		};
 		if (!stream || stream?.constructor !== ReadableStream) {
 			throw(new TypeError("Not a readable stream."));
 		};
+		let unitLength = TextEncoding.getUnitSize(splitMode);
+		let isBigEndian = TextEncoding.isBigEndian(splitMode);
 		let reader = stream.getReader();
 		let chunk, finished = false;
 		let bufferBuilder = [], ptr = 0, lastPtr = 0, lastUnit = 0;
@@ -48,12 +47,26 @@ let TextReader = class {
 					if (chunk) {
 						// Continue the read operation
 						////console.debug(`Read byte at chunk pointer ${ptr}.`);
-						let e = chunk[ptr];
+						let e = 0;
+						if (unitLength === 1) {
+							e = chunk[ptr];
+						} else {
+							if (isBigEndian) {
+								for (let i = 0; i < unitLength; i ++) {
+									e <<= 8;
+									e |= chunk[ptr + i];
+								};
+							} else {
+								for (let i = 0; i < unitLength; i ++) {
+									e |= chunk[ptr + i] << (i << 3);
+								};
+							};
+						};
 						let commitNow = false;
 						switch (e) {
 							case 10: {
 								if (lastUnit === 13) {
-									lastPtr ++;
+									lastPtr += unitLength;
 								} else {
 									commitNow = true;
 								};
@@ -91,7 +104,7 @@ let TextReader = class {
 								commitData(controller, chunk.subarray(lastPtr, ptr));
 								//console.debug(`Single buffer write finished. ${ptr}`);
 							};
-							lastPtr = ptr + 1;
+							lastPtr = ptr += unitLength;
 						};
 						lastUnit = e;
 					} else {
@@ -126,7 +139,7 @@ let TextReader = class {
 						controller.unsent = false;
 						controller.close();
 					};
-					ptr ++;
+					ptr += unitLength;
 				};
 			}
 		}, new ByteLengthQueuingStrategy({"highWaterMark": 256}));
