@@ -26,7 +26,7 @@ export default class TextReader {
 	* @param stream The incoming raw byte stream.
 	* @param label The text encoding label of the incoming raw stream.
 	*/
-	static line(stream: ReadableStream, label?: string): ReadableStream<string>;
+	static line(stream: ReadableStream, label?: string, opt?: TextDecoderOptions): ReadableStream<string>;
 	/**
 	* Read the byte stream as chunks of raw bytes.
 	* @param stream The incoming raw byte stream.
@@ -38,5 +38,5 @@ export default class TextReader {
 	* @param stream The incoming raw byte stream.
 	* @param label The text encoding label of the incoming raw stream.
 	*/
-	static chunk(stream: ReadableStream, label?: string): ReadableStream<string>;
+	static chunk(stream: ReadableStream, label?: string, opt?: TextDecoderOptions): ReadableStream<string>;
 }

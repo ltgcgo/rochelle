@@ -33,10 +33,8 @@ const loadStream = async (stream) => {
 		textRenderer.children[0].remove();
 	};
 	try {
-		/*let vanillaImpl = new TextDecoderStream();
-		stream.pipeTo(vanillaImpl.writable);*/
 		console.info(`Decoding started.`);
-		for await (let line of TextReader.chunk(stream)/*vanillaImpl.readable*/) {
+		for await (let line of TextReader.chunk(stream)) {
 			console.debug(line);
 			textRenderer.appendChild(createP(`Decoded bytes: ${line.length}\n${line.substring(0, 512)}${line.length > 512 ? " ..." : ""}`, ['verbose-text']));
 		};

@@ -306,12 +306,17 @@ let TextReader = class {
 					} else {
 						switch (collapsed) {
 							case "utf-24":
-							case "utf-24be":
+							case "utf-24be": {
+								// Deterministic, never vary
+								let validUnits = Math.floor((value.length - startPtr) / unitLength);
+								endPtr = (validUnits * unitLength) + startPtr;
+								break;
+							};
 							case "utf-32":
 							case "utf-32be": {
 								// Deterministic, never vary
-								let validUnits = Math.floor((value.length - startPtr) / unitLength);
-								endPtr = validUnits * unitLength;
+								let validUnits = (value.length - startPtr) >> 2;
+								endPtr = (validUnits << 2) + startPtr;
 								break;
 							};
 							case "utf-8": {
@@ -334,14 +339,27 @@ let TextReader = class {
 							case "utf-16":
 							case "utf-16be": {
 								// Some tricks to accelerate is possible
-								//
+								// Pre-backtracking speedup
+								endPtr = (((value.length - startPtr) >> 1) << 1) + startPtr;
+								// Don't backtrack if not needed
+								if (readUInt(value, endPtr - 2, 2, isBigEndian) >= 0xD800) {
+									let findUnitStart = true,
+									ptr = endPtr, ptrMin = endPtr - 6;
+									while (findUnitStart && ptr > ptrMin) {
+										ptr -= 2;
+										if (readUInt(value, ptr, 2, isBigEndian) >> 10 === 54) {
+											endPtr = ptr;
+										};
+									};
+								};
 								break;
 							};
 							default: {
 								// Not all encodings distinguish between high and low bytes
-								for (let i = startPtr; i < value.length; i ++) {
+								throw(new TypeError("Maybe someday the rest of the decoders will be implemented"));
+								/*for (let i = startPtr; i < value.length; i ++) {
 									//
-								};
+								};*/
 							};
 						};
 						commitData(controller, value.subarray(startPtr, endPtr));
@@ -361,11 +379,11 @@ let TextReader = class {
 			}
 		}, new ByteLengthQueuingStrategy({"highWaterMark": 256}));
 	};
-	static line(stream, label = "utf-8") {
+	static line(stream, label = "utf-8", opt) {
 		let collapsed = TextEncoding.collapse(label);
 		let bei = TextEncoding.indicator(collapsed);
 		let rawStream = this.lineRaw(stream, bei).getReader();
-		let decoder = new TextDecoder(collapsed);
+		let decoder = new TextDecoder(collapsed, onlostpointercapture);
 		return new ReadableStream({
 			"pull": async (controller) => {
 				let {value, done} = await rawStream.read();
@@ -378,22 +396,28 @@ let TextReader = class {
 			}
 		});
 	};
-	static chunk(stream, label = "utf-8") {
+	static chunk(stream, label = "utf-8", opt) {
 		let collapsed = TextEncoding.collapse(label);
-		let rawStream = this.chunkRaw(stream, collapsed).getReader();
-		let decoder = new TextDecoder(collapsed);
-		return new ReadableStream({
-			"pull": async (controller) => {
-				let {value, done} = await rawStream.read();
-				if (value) {
-					console.debug(value);
-					controller.enqueue(decoder.decode(value));
-				};
-				if (done) {
-					controller.close();
-				};
-			}
-		});
+		if (self.TextDecoderStream) {
+			let decoderStream = new TextDecoderStream(collapsed, opt);
+			stream.pipeTo(decoderStream.writable);
+			return decoderStream.readable;
+		} else {
+			let rawStream = this.chunkRaw(stream, collapsed).getReader();
+			let decoder = new TextDecoder(collapsed);
+			return new ReadableStream({
+				"pull": async (controller) => {
+					let {value, done} = await rawStream.read();
+					if (value) {
+						console.debug(value);
+						controller.enqueue(decoder.decode(value));
+					};
+					if (done) {
+						controller.close();
+					};
+				}
+			});
+		};
 	};
 };
 
