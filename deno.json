@@ -1,7 +1,8 @@
 {
 	"name": "@ltgc/rochelle",
-	"version": "0.2.5",
+	"version": "0.2.6",
 	"exports": {
+		"./textEncoding": "./dist/textEncoding.d.mts",
 		"./textRead": "./dist/textRead.d.mts",
 		"./dsvParse": "./dist/dsvParse.d.mts",
 		"./splicer": "./dist/splicer.d.mts"

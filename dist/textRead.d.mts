@@ -17,10 +17,14 @@
 export default class TextReader {
 	/**
 	 * Read each line as raw bytes.
+	 * @param stream The incoming raw byte stream.
+	 * @param splitMode How should the bytes be split.
 	 */
 	static lineRaw(stream: ReadableStream, splitMode?: number): ReadableStream<Uint8Array>;
 	/**
 	 * Read each line as decoded string.
+	 * @param stream The incoming raw byte stream.
+	 * @param label The text encoding label of the incoming raw stream.
 	 */
-	static line(stream: ReadableStream, splitMode?: number, label?: string): ReadableStream<string>;
+	static line(stream: ReadableStream, label?: string): ReadableStream<string>;
 }
