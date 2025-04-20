@@ -2,7 +2,7 @@
 // Licensed under GNU LGPL 3.0
 
 /**
-* Filling in for the gaping hole of JavaScript, where reading text by lines is present everywhere else.
+* Read text from raw byte streams. Filling in for the gaping hole of JavaScript, where reading text by lines is present everywhere else.
 * @module
 */
 
