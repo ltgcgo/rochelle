@@ -22,7 +22,7 @@ export default class TextReader {
 	*/
 	static lineRaw(stream: ReadableStream, splitMode?: number): ReadableStream<Uint8Array>;
 	/**
-	* Read each line as decoded string.
+	* Read each line as decoded strings.
 	* @param stream The incoming raw byte stream.
 	* @param label The text encoding label of the incoming raw stream.
 	*/

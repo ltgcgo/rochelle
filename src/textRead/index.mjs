@@ -383,7 +383,7 @@ let TextReader = class {
 		let collapsed = TextEncoding.collapse(label);
 		let bei = TextEncoding.indicator(collapsed);
 		let rawStream = this.lineRaw(stream, bei).getReader();
-		let decoder = new TextDecoder(collapsed, onlostpointercapture);
+		let decoder = new TextDecoder(collapsed, opt);
 		return new ReadableStream({
 			"pull": async (controller) => {
 				let {value, done} = await rawStream.read();
