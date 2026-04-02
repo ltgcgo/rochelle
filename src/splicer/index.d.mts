@@ -14,6 +14,8 @@
  * ```
  */
 export class StreamQueue {
+	/** Set to true to emit verbose debug messages. */
+	debugMode: boolean;
 	/**
 	 * Set the params used by the result stream.
 	 * @param underlyingSource Define the behaviour of the result stream. Only "start" and "cancel" are available.
