@@ -19,7 +19,7 @@ export class StreamQueue {
 	 * @param underlyingSource Define the behaviour of the result stream. Only "start" and "cancel" are available.
 	 * @param queuingStrategy Optionally define the queuing strategy of the result stream. Will affect the backpressure.
      */
-	constructor(underlyingSource: object, queuingStrategy: object);
+	constructor(underlyingSource?: object, queuingStrategy?: object);
 	/**
 	 * Enqueue a chunk into the stream with apparent backpressure. Will only resolve when the internal backpressure is relieved.
 	 * @param chunk The chunk to enqueue.
