@@ -3,7 +3,6 @@
 
 "use strict";
 
-// Asynchronously enqueue readable streams, and combine multiple readable streams together. State of the streams supplying to the queue does not matter.
 const StreamQueue = class StreamQueue {
 	#controller;
 	#pullPromise;
@@ -89,11 +88,7 @@ const StreamQueue = class StreamQueue {
 		})();
 	};
 };
-
-// Split one readable stream into multiple. State of the subsequent streams do not affect the source stream. Reading from any of the subsequent streams will relieve the backpressure of the source stream.
 const StreamServe = class StreamServe {};
-
-// Normalize chunks of a byte stream to a specific size. Moved from WingBlade.
 const ChokerStream = class ChokerStream {};
 
 export {

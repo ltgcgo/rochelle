@@ -7,7 +7,7 @@
  */
 
 /**
- * Asynchronously enqueue readable streams, and combine multiple readable streams together.
+ * Asynchronously enqueue readable streams, and combine multiple readable streams together. State of the streams supplying to the queue does not matter.
  * ```js
  * let streamQueue = new StreamQueue();
  * streamQueue.pipeFrom(request.body);
@@ -48,7 +48,7 @@ export class StreamQueue {
 }
 
 /**
- * Split one readable stream into multiple.
+ * Split one readable stream into multiple. State of the subsequent streams do not affect the source stream. Reading from any of the subsequent streams will relieve the backpressure of the source stream.
  * ```js
  * let streamServer = new StreamServe(request.body);
  * ```
@@ -68,7 +68,7 @@ export class StreamServe {
 }
 
 /**
- * Normalize chunks of a byte stream to a specific size.
+ * Normalize chunks of a byte stream to a specific size. Originally from WingBlade.
  * ```js
  * let choked = new ChokerStream(65536, false);
  * choked.attach(incomingReadable);
