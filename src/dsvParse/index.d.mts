@@ -1,9 +1,10 @@
-// Copyright 2024 (C) Lightingale Community
+// 2024-2026 © Lightingale Community
 // Licensed under GNU LGPL 3.0
 
 /**
 * A streamed reader for delimiter-separated values.
 * @module
+* @license LGPL-3.0-only
 */
 
 export class DSVParser {
