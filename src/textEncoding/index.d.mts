@@ -2,10 +2,10 @@
 // Licensed under GNU LGPL 3.0
 
 /**
- * Obtain basic information regarding supported text encodings.
- * @module
- * @license LGPL-3.0-only
- */
+* Obtain basic information regarding supported text encodings.
+* @module
+* @license LGPL-3.0-only
+*/
 
 export default class TextEncoding {
 	static readonly BYTE_1: number;

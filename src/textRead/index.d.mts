@@ -8,13 +8,13 @@
 */
 
 /**
- * A class exposing static methods to read text streams on a line-by-line basis.
- * ```js
- * for await (let line of TextReader.line(someReadableStream)) {
- * 	console.log(line);
- * };
- * ```
- */
+* A class exposing static methods to read text streams on a line-by-line basis.
+* ```js
+* for await (let line of TextReader.line(someReadableStream)) {
+* 	console.log(line);
+* };
+* ```
+*/
 export default class TextReader {
 	/**
 	* Read each line as raw bytes.
