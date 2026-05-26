@@ -14,38 +14,6 @@ cd ..
 #zopfli --i1 -v pages-build.tar
 gzip -9v pages-build.tar
 rm -v pages-build.tar
-cd ghp-gz
-tree -ifl | while IFS= read -r file; do
-	if [ -f "$file" ]; then
-		# Is a file
-		if [ "$(echo "$file" | grep -E "$COMPRESS_CRIT")" != "" ]; then
-			gzip -9 "$file" && echo "Compressed \"${file}\" with Gzip."
-		else
-			echo "File \"${file}\" cannot be compressed."
-		fi
-		if [ -f "$file" ]; then
-			rm -v "$file"
-		fi
-	fi
-done
-tar cvf ../pages-build-gz.tar *
-cd ..
-cd ghp-br
-tree -ifl | while IFS= read -r file; do
-	if [ -f "$file" ]; then
-		# Is a file
-		if [ "$(echo "$file" | grep -E "$COMPRESS_CRIT")" != "" ]; then
-			brotli -v9 "$file"
-		else
-			echo "File \"${file}\" cannot be compressed."
-		fi
-		if [ -f "$file" ]; then
-			rm -v "$file"
-		fi
-	fi
-done
-tar cvf ../pages-build-br.tar *
-cd ..
 cd ghp-base
 tree -ifl | while IFS= read -r file; do
 	if [ -f "$file" ]; then
@@ -58,5 +26,61 @@ tree -ifl | while IFS= read -r file; do
 	fi
 done
 tar cvf ../pages-build-base.tar *
+cd ..
+cd ghp-gz
+printf "" > ../fileHashes.tsv
+tree -ifl | while IFS= read -r file; do
+	if [ -f "$file" ]; then
+		# Is a file
+		if [ "$(echo "$file" | grep -E "$COMPRESS_CRIT")" != "" ]; then
+			fileHash="$(sha256sum "${file}" | cut -d' ' -f1)"
+			findResult="$(grep -F "${fileHash}	" ../fileHashes.tsv | cut -d '	' -f2)"
+			if [ "$findResult" != "" ] ; then
+				pathDiffRaw="$(realpath -Lsm --relative-to="${file}" "${findResult}")"
+				pathDiff="${pathDiffRaw/\.\.\//}"
+				echo "Deduplicated: ${file}.gz -> ${pathDiff}.gz (${findResult})"
+				ln -s "${pathDiff}.gz" "${file}.gz"
+			else
+				echo "${fileHash}	$(realpath -s "${file}")" >> ../fileHashes.tsv
+				gzip -9 "$file" && echo "Compressed \"${file}\" with Gzip."
+			fi
+		else
+			echo "File \"${file}\" cannot be compressed."
+		fi
+		if [ -f "$file" ]; then
+			rm -v "$file"
+		fi
+	fi
+done
+#cat ../fileHashes.tsv
+tar cvf ../pages-build-gz.tar *
+cd ..
+cd ghp-br
+printf "" > ../fileHashes.tsv
+tree -ifl | while IFS= read -r file; do
+	if [ -f "$file" ]; then
+		# Is a file
+		if [ "$(echo "$file" | grep -E "$COMPRESS_CRIT")" != "" ]; then
+			fileHash="$(sha256sum "${file}" | cut -d' ' -f1)"
+			findResult="$(grep -F "${fileHash}	" ../fileHashes.tsv | cut -d '	' -f2)"
+			if [ "$findResult" != "" ] ; then
+				pathDiffRaw="$(realpath -Lsm --relative-to="${file}" "${findResult}")"
+				pathDiff="${pathDiffRaw/\.\.\//}"
+				echo "Deduplicated: ${file}.br -> ${pathDiff}.br (${findResult})"
+				ln -s "${pathDiff}.br" "${file}.br"
+			else
+				echo "${fileHash}	$(realpath -s "${file}")" >> ../fileHashes.tsv
+				brotli -v9j "$file"
+			fi
+		else
+			echo "File \"${file}\" cannot be compressed."
+		fi
+		if [ -f "$file" ]; then
+			rm -v "$file"
+		fi
+	fi
+done
+#cat ../fileHashes.tsv
+tar cvf ../pages-build-br.tar *
 cd ..
 exit
