@@ -3,8 +3,8 @@
 
 /**
 * Generic stream enqueuing, merging and splitting.
-* @module
 * @license LGPL-3.0-only
+* @module cc.ltgc.rochelle.splicer
 */
 
 /**

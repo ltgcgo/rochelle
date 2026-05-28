@@ -42,7 +42,21 @@ tree -ifl | while IFS= read -r file; do
 	if [ -f "$file" ]; then
 		# Is a file
 		if [ "$(echo "$file" | grep -E "$COMPRESS_CRIT")" != "" ]; then
-			rm "$file"
+			if [[ "$file" == *"/index.htm" ]]; then
+				#echo "File \"${file}\" is preserved."
+				printf "" > "$file"
+			elif [[ "$file" == *"/index.html" ]]; then
+				#echo "File \"${file}\" is preserved."
+				printf "" > "$file"
+			elif [[ "$file" == *"/default.htm" ]]; then
+				#echo "File \"${file}\" is preserved."
+				printf "" > "$file"
+			elif [[ "$file" == *"/default.html" ]]; then
+				#echo "File \"${file}\" is preserved."
+				printf "" > "$file"
+			else
+				rm "$file"
+			fi
 		else
 			echo "File \"${file}\" is preserved."
 		fi

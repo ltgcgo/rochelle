@@ -3,8 +3,8 @@
 
 /**
 * Obtain basic information regarding supported text encodings.
-* @module
 * @license LGPL-3.0-only
+* @module cc.ltgc.rochelle.textEncoding
 */
 
 export default class TextEncoding {

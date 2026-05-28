@@ -4,7 +4,7 @@
 /**
 * Read text from raw byte streams. Filling in for the gaping hole of JavaScript, where reading text by lines is present everywhere else.
 * @license LGPL-3.0-only
-* @module
+* @module cc.ltgc.rochelle.textRead
 */
 
 /**

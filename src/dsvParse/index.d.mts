@@ -3,8 +3,8 @@
 
 /**
 * A streamed reader for delimiter-separated values.
-* @module
 * @license LGPL-3.0-only
+* @module cc.ltgc.rochelle.dsvParse
 */
 
 export class DSVParser {

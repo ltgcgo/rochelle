@@ -5,7 +5,7 @@
 * Modular tree-matching and token-based conversion library.
 * Token ID 0 is always used to signal the start of raw untokenized data, while token ID 1 is always used to signal the end of raw untokenized data.
 * @license LGPL-3.0-only
-* @module
+* @module cc.ltgc.rochelle.treeConvert
 */
 
 /** A node on a tree. */
