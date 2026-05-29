@@ -7,13 +7,14 @@ on:
     branches:
       - "main"
     #paths:
+      #- "./css/*"
       #- "./dist/*"
       #- "./ghp/*"
       #- "./libs/*"
       #- "./nix/*"
       #- "./sh/*"
       #- "./src/*"
-      #- "./test/*"
+      #- "./web/*"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -32,6 +33,7 @@ concurrency:
 jobs:
   # Single deploy job since we're just deploying
   deploy:
+    if: github.server_url == 'https://github.com'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -53,8 +55,12 @@ jobs:
         #run: "./shx babel"
       - name: Generate simple sitemap
         run: "./shx sitemap"
-      - name: "Build deployable static pages artifact"
-        run: "./shx ghGenerate"
+      - name: "Build deployable static pages artifact (balanced)"
+        if: ${{ ! endsWith(github.repository, '-stable') }}
+        run: "bash sh/ghGenerate.sh"
+      - name: "Build deployable static pages artifact (long-term)"
+        if: ${{ endsWith(github.repository, '-stable') }}
+        run: "bash sh/ghGenerate.sh 1"
       - name: "Rewrite release"
         uses: ncipollo/release-action@v1
         env:
