@@ -1,10 +1,11 @@
-// Copyright 2024 (C) Lightingale Community
+// 2024-2026 © Lightingale Community
 // Licensed under GNU LGPL 3.0
 
 /**
- * Obtain basic information regarding supported text encodings.
- * @module
- */
+* Obtain basic information regarding supported text encodings.
+* @license LGPL-3.0-only
+* @module cc.ltgc.rochelle.textEncoding
+*/
 
 export default class TextEncoding {
 	static readonly BYTE_1: number;
