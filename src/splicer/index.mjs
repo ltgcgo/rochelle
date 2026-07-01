@@ -10,14 +10,19 @@ const StreamQueue = class StreamQueue {
 	#pullReject;
 	#closedResolve;
 	#isBusy = false;
+	#isImmediateRefresh = false;
+	#immediatePromise = Promise.resolve();
 	debugMode = false;
 	closed = false;
 	closure;
 	cancelled;
 	readable;
-	#isLazy = true;
 	get ready() {
-		return this.#pullPromise;
+		if (this.#isImmediateRefresh || this.closed || this.#isBusy) {
+			return this.#pullPromise;
+		} else {
+			return this.#immediatePromise;
+		};
 	};
 	constructor(underlyingSource = {}, queuingStrategy) {
 		let upThis = this;
@@ -67,32 +72,30 @@ const StreamQueue = class StreamQueue {
 			"pull": async (controller) => {
 				upThis.#isBusy = false;
 				upThis.#pullResolve();
-				if (!upThis.#isLazy) {
-					upThis.#pullPromise = new Promise((p, r) => {
-						upThis.#pullResolve = p;
-						upThis.#pullReject = r;
-					});
-				};
+				upThis.#pullPromise = new Promise((p, r) => {
+					upThis.#pullResolve = p;
+					upThis.#pullReject = r;
+				});
 				upThis.debugMode && console.debug(`Stream pull.`);
 			}
 		}, queuingStrategy);
 	};
-	enqueue(chunk) {
+	async enqueue(chunk) {
 		let upThis = this;
 		if (upThis.closed) {
 			throw(new Error("The stream is closed."));
 		};
 		if (upThis.#isBusy === false) {
 			upThis.#isBusy = true;
-			if (upThis.#isLazy) {
+			/*if (upThis.#isLazy) {
 				upThis.#pullPromise = new Promise((p, r) => {
 					upThis.#pullResolve = p;
 					upThis.#pullReject = r;
 				});
-			};
+			};*/
 		};
 		upThis.#controller.enqueue(chunk);
-		return upThis.#pullPromise;
+		return await upThis.#pullPromise;
 	};
 	close() {
 		let upThis = this;

@@ -28,7 +28,7 @@ export class StreamQueue {
 	enqueue(chunk: any): Promise<void>;
 	/** Resolve when the result stream has backpressure relieved. */
 	ready: Promise<void>;
-	/** Pipe the content of a ReadableStream to the result stream. Backpressure applied.
+	/** (WIP) Pipe the content of a ReadableStream to the result stream. Backpressure applied.
 	* @param source The ReadableStream to read from.
 	*/
 	pipeFrom(source: ReadableStream): void;

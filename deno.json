@@ -1,6 +1,6 @@
 {
 	"name": "@ltgc/rochelle",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"license": "LGPL-3.0-only",
 	"exports": {
 		"./textEncoding": "./dist/textEncoding.d.mts",
