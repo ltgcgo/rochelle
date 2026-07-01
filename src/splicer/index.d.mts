@@ -17,19 +17,18 @@
 export class StreamQueue {
 	/** Set to true to emit verbose debug messages. */
 	debugMode: boolean;
-	/**
-	* Set the params used by the result stream.
+	/** Set the params used by the result stream.
 	* @param underlyingSource Define the behaviour of the result stream. Only "start" and "cancel" are available.
 	* @param queuingStrategy Optionally define the queuing strategy of the result stream. Will affect the backpressure.
     */
 	constructor(underlyingSource?: object, queuingStrategy?: object);
-	/**
-	* Enqueue a chunk into the stream with enforced backpressure. Will only resolve when the internal backpressure is relieved. If trying to enqueue a chunk without respecting backpressure, the method will immediately error out.
+	/** Enqueue a chunk into the stream with enforced backpressure. Will only resolve when the internal backpressure is relieved.
 	* @param chunk The chunk to enqueue.
 	*/
 	enqueue(chunk: any): Promise<void>;
-	/**
-	* Pipe the content of a ReadableStream to the result stream. Backpressure applied.
+	/** Resolve when the result stream has backpressure relieved. */
+	ready: Promise<void>;
+	/** Pipe the content of a ReadableStream to the result stream. Backpressure applied.
 	* @param source The ReadableStream to read from.
 	*/
 	pipeFrom(source: ReadableStream): void;
@@ -41,8 +40,7 @@ export class StreamQueue {
 	closed: boolean;
 	/** Resolve when the result stream gets closed. */
 	closure: Promise<void>;
-	/**
-	* Error the result stream out.
+	/** Error the result stream out and close the stream.
 	* @param err The supplied error object.
 	*/
 	error(err: any): void;

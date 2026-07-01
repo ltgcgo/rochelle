@@ -6,6 +6,8 @@
 const StreamQueue = class StreamQueue {
 	#controller;
 	#pullPromise;
+	#pullResolve;
+	#pullReject;
 	#closedResolve;
 	#isBusy = false;
 	debugMode = false;
@@ -13,12 +15,17 @@ const StreamQueue = class StreamQueue {
 	closure;
 	cancelled;
 	readable;
+	#isLazy = true;
+	get ready() {
+		return this.#pullPromise;
+	};
 	constructor(underlyingSource = {}, queuingStrategy) {
 		let upThis = this;
-		let enqueueResolve, enqueueReject, cancelledResolve;
+		let cancelledResolve;
 		upThis.cancelled = new Promise((p) => {
 			cancelledResolve = p;
 		});
+		WritableStreamDefaultWriter.prototype
 		upThis.closure = new Promise((p) => {
 			upThis.#closedResolve = p;
 		})
@@ -26,7 +33,7 @@ const StreamQueue = class StreamQueue {
 			"type": underlyingSource?.type,
 			"autoAllocateChunkSize": underlyingSource?.autoAllocateChunkSize,
 			"cancel": async (reason) => {
-				enqueueReject(reason);
+				upThis.#pullReject(reason);
 				cancelledResolve(reason);
 				upThis.#closedResolve();
 				upThis.closed = true;
@@ -53,37 +60,56 @@ const StreamQueue = class StreamQueue {
 				}));
 				upThis.debugMode && console.debug(`Source start called.`);
 				upThis.#pullPromise = new Promise((p, r) => {
-					enqueueResolve = p;
-					enqueueReject = r;
+					upThis.#pullResolve = p;
+					upThis.#pullReject = r;
 				});
 			},
 			"pull": async (controller) => {
 				upThis.#isBusy = false;
-				enqueueResolve();
-				upThis.#pullPromise = new Promise((p, r) => {
-					enqueueResolve = p;
-					enqueueReject = r;
-				});
+				upThis.#pullResolve();
+				if (!upThis.#isLazy) {
+					upThis.#pullPromise = new Promise((p, r) => {
+						upThis.#pullResolve = p;
+						upThis.#pullReject = r;
+					});
+				};
 				upThis.debugMode && console.debug(`Stream pull.`);
 			}
 		}, queuingStrategy);
 	};
 	enqueue(chunk) {
-		if (this.#isBusy) {
-			throw(new Error("Tried to enqueue data without backpressure relief."));
+		let upThis = this;
+		if (upThis.closed) {
+			throw(new Error("The stream is closed."));
 		};
-		this.#controller.enqueue(chunk);
-		this.#isBusy = true;
-		return this.#pullPromise;
+		if (upThis.#isBusy === false) {
+			upThis.#isBusy = true;
+			if (upThis.#isLazy) {
+				upThis.#pullPromise = new Promise((p, r) => {
+					upThis.#pullResolve = p;
+					upThis.#pullReject = r;
+				});
+			};
+		};
+		upThis.#controller.enqueue(chunk);
+		return upThis.#pullPromise;
 	};
 	close() {
 		let upThis = this;
+		if (upThis.closed) {
+			console.debug("The stream has already been closed.");
+			return;
+		};
 		upThis.#controller.close();
 		upThis.#closedResolve();
 		upThis.closed = true;
 	};
 	error(err) {
 		let upThis = this;
+		if (upThis.closed) {
+			console.debug("The stream has already been closed.");
+			return;
+		};
 		upThis.#controller.error(err);
 		upThis.#closedResolve();
 		upThis.closed = true;
