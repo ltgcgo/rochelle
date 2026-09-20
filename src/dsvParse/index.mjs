@@ -25,6 +25,7 @@ export default class DsvParser {
 			"pull": async (controller) => {
 				let {value, done} = await rawStream.read();
 				if (typeof value === "string") {
+					if (value?.length <= 0) return;
 					switch (dsvType) {
 						case this.TYPE_TSV: {
 							lineData = [];
