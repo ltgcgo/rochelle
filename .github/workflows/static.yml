@@ -46,7 +46,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Setup Deno
-        uses: denoland/setup-deno@v1.1.1
+        uses: denoland/setup-deno@v2
       - name: Restore file timestamps
         uses: chetan/git-restore-mtime-action@v2
       - name: Build project files

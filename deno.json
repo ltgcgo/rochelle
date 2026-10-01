@@ -5,7 +5,7 @@
 	"exports": {
 		"./textEncoding": "./dist/textEncoding.d.mts",
 		"./textRead": "./dist/textRead.d.mts",
-		"./binaryString": "/dist/binaryString.d.mts",
+		"./binaryString": "./dist/binaryString.d.mts",
 		"./dsvParse": "./dist/dsvParse.d.mts",
 		"./splicer": "./dist/splicer.d.mts"
 	},
@@ -29,6 +29,6 @@
 			"*"
 		]
 	},
-	"nodeModulesDir": false,
+	"nodeModulesDir": "none",
 	"npmRegistry": "http://127.0.0.1:80/"
 }
