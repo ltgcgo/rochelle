@@ -32,7 +32,7 @@ const BinaryString = class BinaryString {
 	decoders = getDecoders(["utf-8"]);
 	/** @type {Uint8Array|Uint8ClampedArray|null} */
 	buffer;
-	/** @type {string} */
+	/** @type {string?} */
 	text;
 	/** @type {string} */
 	label;
@@ -48,30 +48,32 @@ const BinaryString = class BinaryString {
 		switch (buffer?.constructor) {
 			case Uint8Array:
 			case Uint8ClampedArray: {
-				upThis.buffer = buffer;
 				break;
 			};
 			default: {
 				throw(new TypeError(`Invalid binary string buffer type, must be Uint8Array.`));
 			};
 		};
-		let decodeFailed = true;
+		let decodeFailure;
 		if (upThis.decoders) {
 			for (const decoder of upThis.decoders) {
 				try {
 					const text = decoder.decode(buffer);
+					upThis.buffer = buffer;
 					// Validity test.
 					// Final commit.
 					upThis.text = text;
 					upThis.label = TextEncoding.collapse(decoder.encoding);
-					decodeFailed = false;
 					break;
-				} catch (err) {};
+				} catch (err) {
+					decodeFailure = err;
+				};
 			};
 		};
-		if (decodeFailed) {
+		if (decodeFailure) {
 			upThis.text = fallbackDecoder.decode(buffer);
 			upThis.label = "l9";
+			console.debug(decodeFailure);
 			console.debug(`Text decoding failed. Used fallback encoding.`);
 		};
 		upThis.buffer = buffer;
@@ -81,6 +83,7 @@ const BinaryString = class BinaryString {
 	* @param {string|null} label
 	* @returns {Uint8Array} */
 	encode(text, label = "utf-8") {
+		const upThis = this;
 		let collapsedLabel = TextEncoding.collapse("utf-8");
 		if (label) {
 			collapsedLabel = TextEncoding.collapse(label);
@@ -88,6 +91,22 @@ const BinaryString = class BinaryString {
 				throw(new RangeError(`Unsupported encoding label ${label}.`));
 			};
 		};
+		let encoder = textEncoders.get(collapsedLabel);
+		if (!encoder) {
+			encoder = new TextEncoder(collapsedLabel);
+			textEncoders.set(collapsedLabel, encoder);
+		};
+		if (text?.length > 0) {
+			text = upThis.text;
+		};
+		if (typeof text !== "string") {
+			throw(new TypeError(`Invalid binary string text type, must be a string.`));
+		};
+		const buffer = encoder.encode(text);
+		upThis.label = collapsedLabel;
+		upThis.text = text;
+		upThis.buffer = buffer;
+		return buffer;
 	};
 };
 
