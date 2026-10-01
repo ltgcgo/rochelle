@@ -70,11 +70,10 @@ const BinaryString = class BinaryString {
 				};
 			};
 		};
-		if (decodeFailure) {
+		if (decodeFailure || !upThis.text) {
 			upThis.text = fallbackDecoder.decode(buffer);
 			upThis.label = "l9";
-			console.debug(decodeFailure);
-			console.debug(`Text decoding failed. Used fallback encoding.`);
+			console.debug(`Text decoding failed: ${decodeFailure?.name ?? "<anonymous>"} - ${decodeFailure?.message ?? "Nothing."}. Used fallback encoding.`);
 		};
 		upThis.buffer = buffer;
 		return upThis.text;
