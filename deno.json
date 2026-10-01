@@ -1,10 +1,11 @@
 {
 	"name": "@ltgc/rochelle",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"license": "LGPL-3.0-only",
 	"exports": {
 		"./textEncoding": "./dist/textEncoding.d.mts",
 		"./textRead": "./dist/textRead.d.mts",
+		"./binaryString": "/dist/binaryString.d.mts",
 		"./dsvParse": "./dist/dsvParse.d.mts",
 		"./splicer": "./dist/splicer.d.mts"
 	},
