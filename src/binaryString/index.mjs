@@ -28,6 +28,8 @@ const getDecoders = (labels = []) => {
 };
 
 const BinaryString = class BinaryString {
+	static debugMode = false;
+	debugMode = BinaryString.debugMode;
 	/** @type {Iterable<TextDecoder>|null} */
 	decoders = getDecoders(["utf-8"]);
 	/** @type {Uint8Array|Uint8ClampedArray|null} */
@@ -73,7 +75,7 @@ const BinaryString = class BinaryString {
 		if (decodeFailure || !upThis.text) {
 			upThis.text = fallbackDecoder.decode(buffer);
 			upThis.label = "l9";
-			console.debug(`Text decoding failed: ${decodeFailure?.name ?? "<anonymous>"} - ${decodeFailure?.message ?? "Nothing."}. Used fallback encoding.`);
+			upThis.debugMode && console.debug(`Text decoding failed: ${decodeFailure?.name ?? "<anonymous>"} - ${decodeFailure?.message ?? "Nothing."}. Used fallback encoding.`);
 		};
 		upThis.buffer = buffer;
 		return upThis.text;
