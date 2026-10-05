@@ -1,6 +1,6 @@
 {
 	"name": "@ltgc/rochelle",
-	"version": "0.3.4",
+	"version": "0.3.5",
 	"license": "LGPL-3.0-only",
 	"exports": {
 		"./textEncoding": "./dist/textEncoding.d.mts",
@@ -8,6 +8,7 @@
 		"./binaryString": "./dist/binaryString.d.mts",
 		"./bufferSegments": "./dist/bufferSegments.d.mts",
 		"./dsvParse": "./dist/dsvParse.d.mts",
+		"./nativeType": "./dist/nativeType.d.mts",
 		"./splicer": "./dist/splicer.d.mts"
 	},
 	"publish": {

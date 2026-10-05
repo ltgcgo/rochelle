@@ -7,13 +7,13 @@
 * @module cc.ltgc.rochelle.bufferSegments
 */
 
-import {
+import type {
 	int8, uint8,
 	int16, uint16,
 	int32, uint32,
 	int64, uint64,
 	float16, float32, float64
-} from "../../libs/seamstress@ltgcgo/nativeType/index.d.mts";
+} from "../nativeType/index.d.mts";
 
 /** Floating point typed arrays. */
 type FloatArray = Float16Array|Float32Array|Float64Array;
