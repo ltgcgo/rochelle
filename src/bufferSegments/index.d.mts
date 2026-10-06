@@ -125,7 +125,7 @@ export class DataViewSegments extends BufferSegmentsView<DataView> {
 	setFloat64(offset: number, value: float64, isLittleEndian?: boolean): void;
 }
 /** Represents a unified `TypedArray` for all underlying buffer segments.
-* 
+*
 * `arrSegs[index] can also be used, however using `values()` is recommended instead if accessing logically continuous regions to minimise overhead. */
 export class TypedArraySegments<T extends TypedArray, U extends Numbers> extends BufferSegmentsView<T> implements ArrayLike<U> {
 	[n: number]: U;

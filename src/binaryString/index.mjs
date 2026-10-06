@@ -3,6 +3,9 @@
 
 "use strict";
 
+/** @type {Uint8Array} */
+import blockedCodePoints from "../data/generated/bcps.bin";
+
 import {
 	textUnescape
 } from "../common/cEscape.js";
@@ -63,9 +66,38 @@ const BinaryString = class BinaryString {
 					const text = decoder.decode(buffer);
 					upThis.buffer = buffer;
 					// Validity test.
+					let looseCount = 0, strictCount = 0;
+					for (const char of text) {
+						const e = char.codePointAt(0);
+						switch (blockedCodePoints[e] ?? 0) {
+							case 0x00: { // Normal.
+								break;
+							};
+							case 0x40: { // Loose. Allows a wider percentage.
+								looseCount ++;
+								break;
+							};
+							case 0x80: { // Strict. Allows a lower percentage.
+								strictCount ++;
+								break;
+							};
+							case 0xC0: { // Fail if fatal.
+								if (!decoder.fatal) continue;
+								// Fallthrough
+							};
+							case 0xFF: { // Fail on sight
+								throw(new RangeError(`Invalid code point 0x${e.toString(16).padStart(6, "0")}.`));
+								break;
+							};
+							default: {
+								console.debug(`Codepoint category unknown.`);
+							};
+						};
+					};
 					// Final commit.
 					upThis.text = text;
 					upThis.label = TextEncoding.collapse(decoder.encoding);
+					decodeFailure = undefined;
 					break;
 				} catch (err) {
 					decodeFailure = err;
@@ -108,6 +140,11 @@ const BinaryString = class BinaryString {
 		upThis.text = text;
 		upThis.buffer = buffer;
 		return buffer;
+	};
+	constructor(decoders) {
+		if (decoders) {
+			this.decoders = decoders;
+		};
 	};
 };
 

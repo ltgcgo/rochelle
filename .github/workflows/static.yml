@@ -49,6 +49,8 @@ jobs:
         uses: denoland/setup-deno@v2
       - name: Restore file timestamps
         uses: chetan/git-restore-mtime-action@v2
+      - name: Generate relevant data
+        run: "./shx generate"
       - name: Build project files
         run: "./shx build"
       #- name: Build Windows XP-compatible project files

@@ -1,14 +1,15 @@
 *.swp
 .zcompdump
 .zsh_history
-build
 *.map
+deno.lock
 dist/*.js
 dist/*.css
 dist/*.ts
 dist/*.mts
 dist/*.htm
 dist/*.html
+src/data/generated/**
 
 !dist/*.mjs.map
 !dist/*.d.mts

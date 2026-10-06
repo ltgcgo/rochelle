@@ -3,7 +3,7 @@
 
 /** Fake classes intended to specify native types. For documentation only.
 * @license LGPL-3.0-only
-* @module cc.ltgc.seamstress.nativeType
+* @module cc.ltgc.rochelle.nativeType
 */
 
 // Fake signed integers.

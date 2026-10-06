@@ -7,8 +7,8 @@
 // Conversion between ISO-2022 and EUC is a bitch... ISO-2022 is stateful which needs special handling. Maybe support for ISO-2022 encodings shouldn't be added at all.
 // Maybe stateful encodings should be left unsupported, after all.
 
-import collapsedFromLabels from "./collapsedLabels.json";
-import collapsedBEI from "./bei.json";
+import collapsedFromLabels from "../data/generated/collapsedLabels.json" with {type: "json"};
+import collapsedBEI from "../data/generated/bei.json" with {type: "json"};
 
 export default class TextEncoding {
 	static BYTE_1 = 0;
