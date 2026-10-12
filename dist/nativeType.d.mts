@@ -1,4 +1,4 @@
-// 2022-2026 © Lightingale Community
+// 2024-2026 © Lightingale Community
 // Licensed under GNU LGPL v3.0 license.
 
 /** Fake classes intended to specify native types. For documentation only.
@@ -61,5 +61,15 @@ export type u128le = int128
 export type byte = uint8
 export type rune = int32
 
-export default class NativeType {
-}
+/** Floating point typed arrays. */
+export type FloatArray = /*Float16Array|*/Float32Array|Float64Array;
+/** Signed integer typed arrays. */
+export type IntArray = Int8Array|Int16Array|Int32Array;
+/** Unsigned integer typed arrays. */
+export type Uint8Arrays = Uint8Array|Uint8ClampedArray;
+export type UintArray = Uint8Arrays|Uint16Array|Uint32Array;
+/** BigInt typed arrays. */
+export type BigIntArray = BigInt64Array|BigUint64Array;
+/** All typed arrays. */
+export type TypedArray = IntArray|UintArray|BigIntArray|FloatArray;
+export type TypedArrayConstructors<T extends TypedArray> = new (...args: any[]) => T;

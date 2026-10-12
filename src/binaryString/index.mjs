@@ -1,15 +1,18 @@
-// Copyright 2024 (C) Lightingale Community
+// 2024-2026 © Lightingale Community
 // Licensed under GNU LGPL 3.0
 
 "use strict";
 
-/** @type {Uint8Array} */
-import blockedCodePoints from "../data/generated/bcps.bin";
+/** @type {string} */
+import blockedCodePointsB64 from "../data/generated/bcps.b64.txt";
 
 import {
 	textUnescape
 } from "../common/cEscape.js";
 import TextEncoding from "../textEncoding/index.mjs";
+import { BufferIO } from "../bufferIO/index.mjs";
+
+const blockedCodePoints = BufferIO.from(alphabet, string);
 
 /** @type {Map<string, TextEncoder>} */
 const textEncoders = new Map();
@@ -26,7 +29,7 @@ const getDecoders = (labels = []) => {
 			decoders.push(new TextDecoder(label, decoderSetup));
 			hasLabel.add(collapsedLabel);
 		};
-	};
+	};bin
 	return decoders;
 };
 

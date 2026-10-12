@@ -1,14 +1,12 @@
 // 2024-2026 © Lightingale Community
 // Licensed under GNU LGPL 3.0
 
-/**
-* Generic stream enqueuing, merging and splitting.
+/** Generic stream enqueuing, merging and splitting.
 * @license LGPL-3.0-only
 * @module cc.ltgc.rochelle.splicer
 */
 
-/**
-* Asynchronously enqueue readable streams, and combine multiple readable streams together. State of the streams supplying to the queue does not matter.
+/** Asynchronously enqueue readable streams, and combine multiple readable streams together. State of the streams supplying to the queue does not matter.
 * ```js
 * let streamQueue = new StreamQueue();
 * streamQueue.pipeFrom(request.body);
@@ -48,8 +46,7 @@ export class StreamQueue {
 	readable: ReadableStream;
 }
 
-/**
-* Split one readable stream into multiple. State of the subsequent streams do not affect the source stream. Reading from any of the subsequent streams will relieve the backpressure of the source stream.
+/** Split one readable stream into multiple. State of the subsequent streams do not affect the source stream. Reading from any of the subsequent streams will relieve the backpressure of the source stream.
 * ```js
 * let streamServer = new StreamServe(request.body);
 * ```
@@ -68,8 +65,7 @@ export class StreamServe {
 	closure: Promise<void>;
 }
 
-/**
-* Normalize chunks of a byte stream to a specific size. Originally from WingBlade.
+/** Normalize chunks of a byte stream to a specific size. Originally from WingBlade.
 * ```js
 * let choked = new ChokerStream(65536, false);
 * choked.attach(incomingReadable);

@@ -1,8 +1,7 @@
 // 2024-2026 © Lightingale Community
 // Licensed under GNU LGPL 3.0
 
-/**
-* Read and write multiple typed array segments, as if they are a single one.
+/** Read and write multiple typed array segments, as if they are a single one.
 * @license LGPL-3.0-only
 * @module cc.ltgc.rochelle.bufferSegments
 */
@@ -12,20 +11,11 @@ import type {
 	int16, uint16,
 	int32, uint32,
 	int64, uint64,
-	float16, float32, float64
+	float16, float32, float64,
+	BigIntArray,
+	TypedArray,
+	TypedArrayConstructors
 } from "../nativeType/index.d.mts";
-
-/** Floating point typed arrays. */
-type FloatArray = Float16Array|Float32Array|Float64Array;
-/** Signed integer typed arrays. */
-type IntArray = Int8Array|Int16Array|Int32Array;
-/** Unsigned integer typed arrays. */
-type UintArray = Uint8Array|Uint8ClampedArray|Uint16Array|Uint32Array;
-/** BigInt typed arrays. */
-type BigIntArray = BigInt64Array|BigUint64Array;
-/** All typed arrays. */
-type TypedArray = IntArray|UintArray|BigIntArray|FloatArray;
-type TypedArrayConstructors<T extends TypedArray> = new (...args: any[]) => T;
 
 declare type ArrayComparator<T> = (
 	a: T,

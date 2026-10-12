@@ -47,6 +47,9 @@ import DSVParser from "../dsvParse/index.mjs";
 	bcps[0x0088] = 0xC0; // Character tabulation
 	bcps[0x0089] = 0xC0; // Character tabulation with justification
 	bcps[0x008A] = 0xC0; // Line tabulation
+	bcps[0x008B] = 0xC0; // Subscript/half line feed
+	bcps[0x008C] = 0xC0; // Superscript/half reverse line feed
+	bcps[0x008D] = 0xC0; // Reverse line feed
 	bcps[0x008E] = 0xFF; // Single shift two (used by some legacy encodings)
 	bcps[0x008F] = 0xFF; // Single shift three (used by some legacy encodings)
 	bcps[0x0090] = 0xC0; // Device control string
@@ -131,19 +134,31 @@ import DSVParser from "../dsvParse/index.mjs";
 	bcps[0x0F98] = 0xFF; // Unassigned
 	bcps[0x0FDB] = 0xFF; // Unassigned
 	bcps[0x0FDC] = 0xFF; // Unassigned
-	bcps.fill(0xFF, 0x0FE0, 0x1000); // Unassigned*/
-	await Deno.writeFile("./src/data/generated/bcps.bin", bcps);
+	bcps.fill(0xFF, 0x0FE0, 0x1000); // Unassigned
+	bcps[0xFDFF] = 0xC0; // Arabic ligature azza wa jall (decoders may emit this as a corrupted FFFD)
+	bcps[0xFEFF] = 0xC0; // Zero-wdth no-break space (superceded by WJ 0x2060, complementary to the reverse BOM)
+	bcps[0xFFFD] = 0xFF; // Replacement (cannot appear in normal text)
+	bcps[0xFFFE] = 0xFF; // Byte Order Mark (cannot appear in normal text)
+	bcps[0xFFFF] = 0xFF; // Invalid*/
+	await Deno.writeTextFile("./src/data/generated/bcps.b64.txt", bcps.toBase64());
 };
 
 {
-	const beiObject = {}, collapsedLabelsObject = {};
+	const beiObject = {}, collapsedLabelsObject = {}, idObject = {}, idReverseMap = [];
+	let id = 0;
 	for await (let line of DSVParser.parseObjects(0, TextReader.line((await Deno.open("./src/data/encodings.tsv")).readable))) {
 		beiObject[line.nominal] = parseInt(line.bei);
 		collapsedLabelsObject[line.nominal] = line.nominal;
+		idObject[line.nominal] = id;
+		idReverseMap.push(line.nominal);
 		for (const label of line.accepted.split(",")) {
 			collapsedLabelsObject[label] = line.nominal;
+			idObject[label] = id;
 		};
+		id ++;
 	};
 	await Deno.writeTextFile("./src/data/generated/bei.json", JSON.stringify(beiObject));
 	await Deno.writeTextFile("./src/data/generated/collapsedLabels.json", JSON.stringify(collapsedLabelsObject));
+	await Deno.writeTextFile("./src/data/generated/idFrom.json", JSON.stringify(idObject));
+	await Deno.writeTextFile("./src/data/generated/idTo.json", JSON.stringify(idReverseMap));
 };

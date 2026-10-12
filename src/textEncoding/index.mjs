@@ -1,4 +1,4 @@
-// Copyright 2024 (C) Lightingale Community
+// 2024-2026 © Lightingale Community
 // Licensed under GNU LGPL 3.0
 
 "use strict";
@@ -9,6 +9,8 @@
 
 import collapsedFromLabels from "../data/generated/collapsedLabels.json" with {type: "json"};
 import collapsedBEI from "../data/generated/bei.json" with {type: "json"};
+import tableIdFromLabel from "../data/generated/idFrom.json" with {type: "json"};
+import tableIdToLabel from "../data/generated/idTo.json" with {type: "json"};
 
 export default class TextEncoding {
 	static BYTE_1 = 0;
@@ -29,17 +31,31 @@ export default class TextEncoding {
 		return (indicator & 1) === 1;
 	};
 	static collapse(label) {
-		let collapsed = collapsedFromLabels[label];
+		const collapsed = collapsedFromLabels[label];
 		if (typeof collapsed !== "string") {
 			throw(new TypeError(`Provided label "${label}" is not supported.`));
 		};
 		return collapsed;
 	};
 	static indicator(collapsed) {
-		let indicator = collapsedBEI[collapsed];
+		const indicator = collapsedBEI[collapsed];
 		if (typeof indicator !== "number") {
 			throw(new TypeError(`Provided collapsed label "${collapsed}" is not supported.`));
 		};
 		return indicator;
+	};
+	static toId(label) {
+		const encodingId = tableIdFromLabel[label];
+		if (!Number.isSafeInteger(encodingId)) {
+			throw(new TypeError(`Provided label "${label}" is not supported.`));
+		};
+		return encodingId;
+	};
+	static fromId(encodingId) {
+		const label = tableIdToLabel[encodingId];
+		if (typeof label !== "string") {
+			throw(new TypeError(`Provided encoding ID "${encodingId}" is not supported.`));
+		};
+		return label;
 	};
 };

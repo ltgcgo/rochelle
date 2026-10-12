@@ -1,4 +1,4 @@
-// Copyright 2024 (C) Lightingale Community
+// 2024-2026 © Lightingale Community
 // Licensed under GNU LGPL 3.0
 
 // Takes a stream, and read decoded text by line on demand
