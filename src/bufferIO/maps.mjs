@@ -48,7 +48,7 @@ for (let [key, value] of bufferMaps[0]) {
 			decodeMap[32] = 253;
 			// Fallthrough.
 		};
-		case "uustandard": {
+		case "uu": {
 			decodeMap[9] = 254;
 			decodeMap[10] = 254;
 			decodeMap[12] = 254;

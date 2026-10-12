@@ -45,7 +45,7 @@ export function bufferCarve<T extends Uint8Arrays>(buffer: T, carvedIndexList: n
 * - `xml`: Standard XML encoding.
 * - `xx`: Standard xxencoding.
 * - `xxurl`: URL-safe xxencoding.
-* - `y64`: Encoding scheme of an unknown origin. URL-safe.
+* - `y64`: URL-safe Base64 variant from Yahoo.
 * - `z64`: Encoding scheme of an unknown origin.
 * - `z64url`: URL-safe z64.
 * @param alphabet The alphabet to use.
