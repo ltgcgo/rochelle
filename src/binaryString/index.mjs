@@ -12,7 +12,7 @@ import {
 import TextEncoding from "../textEncoding/index.mjs";
 import { BufferIO } from "../bufferIO/index.mjs";
 
-const blockedCodePoints = BufferIO.from(alphabet, string);
+const blockedCodePoints = BufferIO.from("base64", string);
 
 /** @type {Map<string, TextEncoder>} */
 const textEncoders = new Map();
