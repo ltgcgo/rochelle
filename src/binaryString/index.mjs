@@ -10,9 +10,9 @@ import {
 	textUnescape
 } from "../common/cEscape.js";
 import TextEncoding from "../textEncoding/index.mjs";
-import { BufferIO } from "../bufferIO/index.mjs";
+import { bufferFrom } from "../bufferIO/index.mjs";
 
-const blockedCodePoints = BufferIO.from("base64", string);
+const blockedCodePoints = bufferFrom("base64", blockedCodePointsB64);
 
 /** @type {Map<string, TextEncoder>} */
 const textEncoders = new Map();
@@ -29,7 +29,7 @@ const getDecoders = (labels = []) => {
 			decoders.push(new TextDecoder(label, decoderSetup));
 			hasLabel.add(collapsedLabel);
 		};
-	};bin
+	};
 	return decoders;
 };
 
