@@ -9,6 +9,7 @@ dist/*.ts
 dist/*.mts
 dist/*.htm
 dist/*.html
+dist/*.wasm
 src/data/generated/**
 
 !dist/*.mjs.map

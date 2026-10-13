@@ -16,11 +16,12 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
-
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Setup Deno
         uses: denoland/setup-deno@v2
-
+      - name: Setup WABT
+        run: "sudo apt install wabt"
       - name: Generate relevant data
         run: "./shx generate"
       - name: Publish package

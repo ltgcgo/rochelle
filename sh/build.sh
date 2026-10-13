@@ -41,6 +41,10 @@ fi
 if [ -d "./src" ]; then
 	echo -e "\033[1;34mBuilding\033[0m: JS."
 	ls -1 src | while IFS= read -r dir ; do
+		if [ -f "src/${dir}/index.wat" ] ; then
+			echo "Building WAT target \"${dir}\"..."
+			shx wasm $dir
+		fi
 		if [ -f "src/${dir}/index.js" ] ; then
 			echo "Building JS target \"${dir}\"..."
 			shx live $dir --minify $1 > /dev/null

@@ -47,6 +47,8 @@ jobs:
         uses: actions/configure-pages@v3
       - name: Setup Deno
         uses: denoland/setup-deno@v2
+      - name: Setup WABT
+        run: "sudo apt install wabt"
       - name: Restore file timestamps
         uses: chetan/git-restore-mtime-action@v2
       - name: Generate relevant data
