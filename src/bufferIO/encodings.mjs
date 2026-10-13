@@ -5,6 +5,10 @@
 
 import bufferMaps from "./maps.mjs";
 
+// Prevents dependents using this as fallbacks from causing infinite loops.
+const useHexDecOffload = Object.hasOwn(Uint8Array, "fromHex");
+const useB64DecOffload = Object.hasOwn(Uint8Array, "fromBase64");
+
 /** @param {string} alphabet
 * @param {string} string
 * @param {string} lastChunkHandling
@@ -22,7 +26,7 @@ const bufferFrom = function (alphabet = "base64", string, lastChunkHandling = "l
 	let buffer;
 	switch (alphabet) {
 		case "hex": {
-			if (Object.hasOwn(Uint8Array, "fromHex")) {
+			if (useHexDecOffload) {
 				// Use the built-in method whenever available.
 				return Uint8Array.fromHex(string);
 			};
@@ -61,7 +65,7 @@ const bufferFrom = function (alphabet = "base64", string, lastChunkHandling = "l
 		};
 		default: {
 			// Base64 with various alphabets
-			if (Object.hasOwn(Uint8Array, "fromBase64")) {
+			if (useB64DecOffload) {
 				// Use the built-in method whenever available.
 				switch (alphabet) {
 					case "base64":
