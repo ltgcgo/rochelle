@@ -3,6 +3,7 @@
 
 "use strict";
 
+import { asView, isLittleEndianNative } from "./asView.mjs";
 import { bitFieldPack, bitFieldUnpack } from "./bitField.mjs";
 import { bufferFrom, bufferTo } from "./encodings.mjs";
 import { bufferCarve } from "./edits.mjs";
@@ -10,11 +11,13 @@ import { getFreeMemMiB, updateCeiling, allocateU8 } from "./utils.mjs";
 
 export {
 	allocateU8,
+	asView,
 	bitFieldPack,
 	bitFieldUnpack,
 	bufferCarve,
 	bufferFrom,
 	bufferTo,
 	getFreeMemMiB,
+	isLittleEndianNative,
 	updateCeiling
 };

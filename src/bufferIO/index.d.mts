@@ -3,12 +3,26 @@
 
 /** Common binary buffer IO operations, including string representation encoding/decoding and safe allocations.
 * @license LGPL-3.0-only
-* @module cc.ltgc.rochelle.bufferIO
-*/
+* @module cc.ltgc.rochelle.bufferIO */
 
-import type { uint32, TypedArray, Uint8Arrays } from "../nativeType/index.d.mts";
+import type {
+	uint32,
+	ArrayBufferViewConstructors,
+	TypedArray,
+	Uint8Arrays
+} from "../nativeType/index.d.mts";
 
 type numberArray = number[]|TypedArray;
+
+/** Return a `Uint8Array` object with the desired size. If the system does not have enough resources, this method will throw. Used to guard against buffer size explosions. */
+export function allocateU8(desiredSize: uint32): Uint8Array;
+
+/** Re-expose the incoming buffer view as a separate buffer view. If multi-byte views are requested with endianness mismatches against the platform, the resulting view will be a copy instead.
+*
+* If the new view is a guaranteed multi-byte view, and it cannot cleanly satisfy the original buffer view (the original byte length is not divisible by the target byte count per element), this method will throw.
+*
+* To make sure this method never copies the buffer, either omit the `isLittleEndian` argument, or supply the `isLittleEndian` argument with `isLittleEndianNative`. */
+export function asView<T extends ArrayBufferView>(fromView: ArrayBufferView, targetConstructor: ArrayBufferViewConstructors<T>, isLittleEndian?: boolean): T;
 
 /** Pack a number array into a bit field. */
 export function bitFieldPack(sourceBuffer: numberArray, targetBuffer?: Uint8Arrays, options?: {
@@ -26,9 +40,6 @@ export function bitFieldUnpack<T extends numberArray>(sourceBuffer: Uint8Arrays,
 	/** If an elemnt is `true`, the unpacked element will be populated with this value, otherwise it will become `0`. */
 	"value": number
 }): T;
-
-/** Return a `Uint8Array` object with the desired size. If the system does not have enough resources, this method will throw. Used to guard against buffer size explosions. */
-export function allocateU8(desiredSize: uint32): Uint8Array;
 
 /** Return a new copy of `Uint8Array` having all elements of the specified indices removed. */
 export function bufferCarve<T extends Uint8Arrays>(buffer: T, carvedIndexList: number[]): T;
@@ -55,3 +66,9 @@ export function bufferFrom(alphabet: string, string: string, lastChunkHandling?:
 
 /** (WIP) */
 export function bufferTo(): string;
+
+/** When true, the CPU architecture is little-endian. */
+export const isLittleEndianNative: boolean;
+
+/** Request an refresh to the memory allocation ceiling. */
+export function updateCeiling(): void;

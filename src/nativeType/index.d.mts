@@ -73,3 +73,4 @@ export type BigIntArray = BigInt64Array|BigUint64Array;
 /** All typed arrays. */
 export type TypedArray = IntArray|UintArray|BigIntArray|FloatArray;
 export type TypedArrayConstructors<T extends TypedArray> = new (...args: any[]) => T;
+export type ArrayBufferViewConstructors<T extends ArrayBufferView> = new (...args: any[]) => T;
