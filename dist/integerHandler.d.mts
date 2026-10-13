@@ -1,5 +1,6 @@
-// 2024-2026 © Lightingale Community
+// 2025-2026 © Lightingale Community
 // Licensed under GNU LGPL 3.0
+// Originally from Seamstress.
 
 /** Common integer-binary IO operations.
 * @license LGPL-3.0-only
