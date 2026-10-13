@@ -162,3 +162,19 @@ import DSVParser from "../dsvParse/index.mjs";
 	await Deno.writeTextFile("./src/data/generated/idFrom.json", JSON.stringify(idObject));
 	await Deno.writeTextFile("./src/data/generated/idTo.json", JSON.stringify(idReverseMap));
 };
+
+{
+	const table256Popcount = new Uint8Array(256);
+	// https://graphics.stanford.edu/%7Eseander/bithacks.html#CountBitsSetKernighan
+	const brainKernighan = function (v = 0) {
+		let c;
+		for (c = 0; v > 0; c ++) {
+			v &= v - 1;
+		};
+		return c;
+	};
+	for (let i = 0; i < table256Popcount.length; i ++) {
+		table256Popcount[i] = brainKernighan(i);
+	};
+	await Deno.writeTextFile("./src/data/generated/popcount256.b64.txt", table256Popcount.toBase64());
+};
