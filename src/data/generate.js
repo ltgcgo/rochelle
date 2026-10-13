@@ -166,6 +166,8 @@ import DSVParser from "../dsvParse/index.mjs";
 {
 	const table256Popcount = new Uint8Array(256);
 	const table256Reversed = new Uint8Array(256);
+	const table256CtzCount = new Uint8Array(256); // May not be used
+	const table128Unweave = new Uint8Array(128); // Forward interleaving require multi-byte representation, so dynamically generated at start.
 	// https://graphics.stanford.edu/%7Eseander/bithacks.html#CountBitsSetKernighan
 	const brianKernighan = function (v = 0) {
 		let c;
@@ -182,10 +184,34 @@ import DSVParser from "../dsvParse/index.mjs";
 		};
 		return r;
 	};
+	// https://graphics.stanford.edu/%7Eseander/bithacks.html#ZerosOnRightMultLookup
+	const ctzDeBruijn = function (v = 0) {
+		return [
+			 0,  1, 28,  2, 29, 14, 24, 3,
+			30, 22, 20, 15, 25, 17,  4, 8,
+			31, 27, 13, 23, 21, 19, 16, 7,
+			26, 12, 18,  6, 11,  5, 10, 9
+		][(v & -v) * 0x077CB531 >>> 27];
+	};
+	const weaveNibbleObvious = function (v = 0) {
+		let r = 0;
+		for (let i = 0; i < 4; i ++) {
+			//r |= ((v >>> i) & 1) << (i << 1);
+			r |= (v & (1 << i)) << i;
+		};
+		return r;
+	};
 	for (let i = 0; i < table256Popcount.length; i ++) {
 		table256Popcount[i] = brianKernighan(i);
 		table256Reversed[i] = reverseByteObvious(i);
+		table256CtzCount[i] = ctzDeBruijn(i);
 	};
-	await Deno.writeTextFile("./src/data/generated/popcount256.b64.txt", table256Popcount.toBase64());
-	await Deno.writeTextFile("./src/data/generated/reversed256.b64.txt", table256Reversed.toBase64());
+	table128Unweave.fill(255); // Invalid fill.
+	for (let i = 0; i < 16; i ++) {
+		table128Unweave[weaveNibbleObvious(i)] = i;
+	};
+	await Deno.writeTextFile("./src/data/generated/table256Popcount.b64.txt", table256Popcount.toBase64());
+	await Deno.writeTextFile("./src/data/generated/table256Reversed.b64.txt", table256Reversed.toBase64());
+	//console.debug(table256CtzCount);
+	console.debug(table128Unweave);
 };
