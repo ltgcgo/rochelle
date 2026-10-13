@@ -37,6 +37,21 @@
 		i32.ctz
 	)
 	(func
+		(export "i32MaskedMerge")
+		(param $sourceNonMasked i32)
+		(param $sourceMasked i32)
+		(param $mergeMask i32)
+		(result i32)
+		;; https://graphics.stanford.edu/%7Eseander/bithacks.html#MaskedMerge
+		local.get $sourceNonMasked
+		local.get $sourceMasked
+		i32.xor
+		local.get $mergeMask
+		i32.and
+		local.get $sourceNonMasked
+		i32.xor
+	)
+	(func
 		(export "i32Popcnt")
 		(param $value i32)
 		(result i32)
