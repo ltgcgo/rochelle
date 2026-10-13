@@ -165,16 +165,27 @@ import DSVParser from "../dsvParse/index.mjs";
 
 {
 	const table256Popcount = new Uint8Array(256);
+	const table256Reversed = new Uint8Array(256);
 	// https://graphics.stanford.edu/%7Eseander/bithacks.html#CountBitsSetKernighan
-	const brainKernighan = function (v = 0) {
+	const brianKernighan = function (v = 0) {
 		let c;
 		for (c = 0; v > 0; c ++) {
 			v &= v - 1;
 		};
 		return c;
 	};
+	// Failed to implement: https://graphics.stanford.edu/%7Eseander/bithacks.html#BitReverseObvious
+	const reverseByteObvious = function (v = 0) {
+		let r = 0;
+		for (let i = 0; i < 8; i ++) {
+			r |= ((v >>> i) & 1) << (7 - i);
+		};
+		return r;
+	};
 	for (let i = 0; i < table256Popcount.length; i ++) {
-		table256Popcount[i] = brainKernighan(i);
+		table256Popcount[i] = brianKernighan(i);
+		table256Reversed[i] = reverseByteObvious(i);
 	};
 	await Deno.writeTextFile("./src/data/generated/popcount256.b64.txt", table256Popcount.toBase64());
+	await Deno.writeTextFile("./src/data/generated/reversed256.b64.txt", table256Reversed.toBase64());
 };
