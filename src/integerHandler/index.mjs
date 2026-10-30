@@ -492,12 +492,7 @@ export default class IntegerHandler {
 		if (this.useNative) {
 			return this.#obtainDataView(buffer).getUint32(offset, isLittleEndian);
 		} else {
-			let result = this.readInt32(buffer, isLittleEndian, offset);
-			if (result >>> 31) {
-				return 4294967296 + result;
-			} else {
-				return result;
-			};
+			return this.readInt32(buffer, isLittleEndian, offset) >>> 0;
 		};
 	};
 	static readUint64(buffer, isLittleEndian = false, offset = 0) {
