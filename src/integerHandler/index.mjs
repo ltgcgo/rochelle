@@ -126,7 +126,294 @@ export default class IntegerHandler {
 			return Number(BigInt.asUintN(16, rawExponent)) - 1022;
 		};
 	};
+	// Tagged integers. Signed variants are extensions.
+	// Currently only seen in Open ModPlug Tracker and called "adaptive integer", which is just a misnomer.
+	// Besides the potential speed advantage, why didn't they just use VLV-8?
+	static sizeTInt16(buffer, offset = 0) {
+		if (!Number.isSafeInteger(offset) || offset < 0) {
+			throw(new RangeError(`Offset must be a non-negative integer within bounds.`));
+		};
+		this.#ensureU8(buffer);
+		const expectedSize = (buffer[offset] & 1) + 1;
+		return (buffer.length - offset) >= expectedSize ? expectedSize: 0;
+	};
+	static readTUint16(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		let result;
+		switch (this.sizeTInt16(buffer, offset)) {
+			case 0: {
+				throw(new Error(`Incomplete tagged 16-bit integer.`));
+				break;
+			};
+			case 1: {
+				result = buffer[offset];
+				break;
+			};
+			case 2: {
+				result = this.readUint16(buffer, true, offset);
+				break;
+			};
+			default: {
+				throw(new Error(`Invalid tagged 16-bit integer read state.`));
+			};
+		};
+		return result >>> 1;
+	};
+	static readTInt16(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		let result;
+		switch (this.sizeTInt16(buffer, offset)) {
+			case 0: {
+				throw(new Error(`Incomplete tagged 16-bit integer.`));
+				break;
+			};
+			case 1: {
+				result = this.readInt8(buffer, offset);
+				break;
+			};
+			case 2: {
+				result = this.readInt16(buffer, true, offset);
+				break;
+			};
+			default: {
+				throw(new Error(`Invalid tagged 16-bit integer read state.`));
+			};
+		};
+		return result >> 1;
+	};
+	static sizeTInt32(buffer, offset = 0) {
+		if (!Number.isSafeInteger(offset) || offset < 0) {
+			throw(new RangeError(`Offset must be a non-negative integer within bounds.`));
+		};
+		this.#ensureU8(buffer);
+		const expectedSize = (buffer[offset] & 3) + 1;
+		return (buffer.length - offset) >= expectedSize ? expectedSize: 0;
+	};
+	static readTUint32(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		let result;
+		switch (this.sizeTInt32(buffer, offset)) {
+			case 0: {
+				throw(new Error(`Incomplete tagged 32-bit integer.`));
+				break;
+			};
+			case 1: {
+				result = buffer[offset];
+				break;
+			};
+			case 2: {
+				result = this.readUint16(buffer, true, offset);
+				break;
+			};
+			case 3: {
+				result = this.readUint24(buffer, true, offset);
+				break;
+			};
+			case 4: {
+				result = this.readUint32(buffer, true, offset);
+				break;
+			};
+			default: {
+				throw(new Error(`Invalid tagged 32-bit integer read state.`));
+			};
+		};
+		return result >>> 2;
+	};
+	static readTInt32(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		let result;
+		switch (this.sizeTInt32(buffer, offset)) {
+			case 0: {
+				throw(new Error(`Incomplete tagged 32-bit integer.`));
+				break;
+			};
+			case 1: {
+				result = this.readInt8(buffer, offset);
+				break;
+			};
+			case 2: {
+				result = this.readInt16(buffer, true, offset);
+				break;
+			};
+			case 3: {
+				result = this.readInt24(buffer, true, offset);
+				break;
+			};
+			case 4: {
+				result = this.readInt32(buffer, true, offset);
+				break;
+			};
+			default: {
+				throw(new Error(`Invalid tagged 32-bit integer read state.`));
+			};
+		};
+		return result >> 2;
+	};
+	static sizeTInt64(buffer, offset = 0) {
+		if (!Number.isSafeInteger(offset) || offset < 0) {
+			throw(new RangeError(`Offset must be a non-negative integer within bounds.`));
+		};
+		this.#ensureU8(buffer);
+		const expectedSize = 1 << (buffer[offset] & 3);
+		return (buffer.length - offset) >= expectedSize ? expectedSize: 0;
+	};
+	static readTUint64(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		switch (this.sizeTInt64(buffer, offset)) {
+			case 0: {
+				throw(new Error(`Incomplete tagged 64-bit integer.`));
+				break;
+			};
+			case 1: {
+				return buffer[offset] >>> 2;
+				break;
+			};
+			case 2: {
+				return this.readUint16(buffer, true, offset) >>> 2;
+				break;
+			};
+			case 4: {
+				return this.readUint32(buffer, true, offset) >>> 2;
+				break;
+			};
+			case 8: {
+				// Must not reach 2⁴⁶!
+				if (this.readUint16(buffer, true, offset + 6) > 0) {
+					throw(new RangeError(`Invalid tagged 64-bit integer read state.`));
+				} else {
+					const low30Bit = this.readUint32(buffer, true, offset) >>> 2;
+					return this.readUint16(buffer, true, offset + 4) * 0x40000000 + low30Bit;
+				};
+				break;
+			};
+			default: {
+				throw(new Error(`Invalid tagged 64-bit integer read state.`));
+			};
+		};
+	};
+	static readTInt64(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		switch (this.sizeTInt64(buffer, offset)) {
+			case 0: {
+				throw(new Error(`Incomplete tagged 64-bit integer.`));
+				break;
+			};
+			case 1: {
+				return this.readInt8(buffer, offset) >> 2;
+				break;
+			};
+			case 2: {
+				return this.readInt16(buffer, true, offset) >> 2;
+				break;
+			};
+			case 4: {
+				return this.readInt32(buffer, true, offset) >> 2;
+				break;
+			};
+			case 8: {
+				// This actually allows [-2⁴⁶, 2⁴⁶), as the highest 16-bits handled the sign bit.
+				switch (this.readUint16(buffer, true, offset + 6)) {
+					case 0x0000: {
+						const low30Bit = this.readUint32(buffer, true, offset) >>> 2;
+						return this.readUint16(buffer, true, offset + 4) * 0x40000000 + low30Bit;
+						break;
+					};
+					case 0xffff: {
+						const low30BitFlipped = this.readUint32(buffer, true, offset) >>> 2;
+						const high16BitFlipped = this.readUint16(buffer, true, offset + 4);
+						return -((high16BitFlipped ^ 0xffff) * 0x40000000 + (low30BitFlipped ^ 0x3fffffff)) - 1; // Do you like two's complement?
+						break;
+					};
+					default: {
+						throw(new RangeError(`Invalid tagged 64-bit integer read state.`));
+					};
+				};
+				break;
+			};
+			default: {
+				throw(new Error(`Invalid tagged 64-bit integer read state.`));
+			};
+		};
+	};
+	static readTBigUint64(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		let result;
+		switch (this.sizeTInt64(buffer, offset)) {
+			case 0: {
+				throw(new Error(`Incomplete tagged 64-bit integer.`));
+				break;
+			};
+			case 1: {
+				result = BigInt(buffer[offset]);
+				break;
+			};
+			case 2: {
+				result = BigInt(this.readUint16(buffer, true, offset));
+				break;
+			};
+			case 4: {
+				result = BigInt(this.readUint32(buffer, true, offset));
+				break;
+			};
+			case 8: {
+				// Must not reach 2⁴⁸!
+				result = this.readUint64(buffer, true, offset);
+				break;
+			};
+			default: {
+				throw(new Error(`Invalid tagged 64-bit integer read state.`));
+			};
+		};
+		return result >> 2n;
+	};
+	static readTBigInt64(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		let result;
+		switch (this.sizeTInt64(buffer, offset)) {
+			case 0: {
+				throw(new Error(`Incomplete tagged 64-bit integer.`));
+				break;
+			};
+			case 1: {
+				result = BigInt(buffer[offset]);
+				break;
+			};
+			case 2: {
+				result = BigInt(this.readUint16(buffer, true, offset));
+				break;
+			};
+			case 4: {
+				result = BigInt(this.readUint32(buffer, true, offset));
+				break;
+			};
+			case 8: {
+				// Must not reach 2⁴⁸!
+				result = this.readInt64(buffer, true, offset);
+				break;
+			};
+			default: {
+				throw(new Error(`Invalid tagged 64-bit integer read state.`));
+			};
+		};
+		return result >> 2n;
+	};
 	// Standard MIDI VLV-8, slightly extended.
+	static sizeVLV(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		if (
+			!Number.isSafeInteger(offset) ||
+			offset < 0 ||
+			offset >= buffer.length
+		) return 0;
+		let breakCrit = Math.min(buffer.length - offset, 16) + offset;
+		for (let i = offset; i < breakCrit; i ++) {
+			let e = buffer[i];
+			if ((e & this.MASK_VLV) === 0) {
+				return i - offset + 1;
+			};
+		};
+		return 0; // Failure.
+	};
 	static readVLV(buffer, offset = 0) {
 		// VLV-8 are all big-endian.
 		this.#ensureU8(buffer);
@@ -193,22 +480,6 @@ export default class IntegerHandler {
 		};
 		return result;
 	};
-	static sizeVLV(buffer, offset = 0) {
-		this.#ensureU8(buffer);
-		if (
-			!Number.isSafeInteger(offset) ||
-			offset < 0 ||
-			offset >= buffer.length
-		) return 0;
-		let breakCrit = Math.min(buffer.length - offset, 16) + offset;
-		for (let i = offset; i < breakCrit; i ++) {
-			let e = buffer[i];
-			if ((e & this.MASK_VLV) === 0) {
-				return i - offset + 1;
-			};
-		};
-		return 0; // Failure.
-	};
 	static lengthVLV(value) {
 		this.#ensureNumber(value);
 		if (value < 0 || value > 268435455) {
@@ -256,6 +527,40 @@ export default class IntegerHandler {
 		return buffer;
 	};
 	// Reversible VLV-8, built on top of the MIDI VLV-8 idea. Accidentally recreated the packet continuation state in MIDI 2.0.
+	static sizeRVLV(buffer, offset = 0) {
+		this.#ensureU8(buffer);
+		switch (buffer[offset] & this.MASK_RVLV) {
+			case this.RVLV_SINGLE: {
+				return 1;
+				break;
+			};
+			case this.RVLV_MIDDLE:
+			case this.RVLV_END: {
+				//console.debug(`Invalid start state. (${offset} + 0)`);
+				return 0;
+				break;
+			};
+		};
+		// The only valid state for the first offset byte in the buffer at this point is RVLV_START.
+		let storedState = 3, // 1-3: END, MIDDLE, START
+		breakCrit = Math.min(buffer.length, 16);
+		for (let i = 1; i < breakCrit; i ++) {
+			let e = buffer[i + offset],
+			currentState = e >> 6;
+			if (
+				currentState === 0 ||
+				(storedState === 3 && (0b00001001 >> currentState & 1)) ||
+				(storedState === 2 && currentState > storedState)
+			) {
+				//console.debug(`Invalid transitioning state: ${storedState} → ${currentState}. (${offset} + 0)`);
+				return 0;
+			} else if (currentState === 1) {
+				return i + 1;
+			};
+			storedState = currentState;
+		};
+		return 0; // Failure.
+	};
 	static readRVLV(buffer, offset = 0) {
 		this.#ensureU8(buffer);
 		switch (buffer[offset] & this.MASK_RVLV) {
@@ -335,40 +640,6 @@ export default class IntegerHandler {
 			storedState = currentState;
 		};
 		return result;
-	};
-	static sizeRVLV(buffer, offset = 0) {
-		this.#ensureU8(buffer);
-		switch (buffer[offset] & this.MASK_RVLV) {
-			case this.RVLV_SINGLE: {
-				return 1;
-				break;
-			};
-			case this.RVLV_MIDDLE:
-			case this.RVLV_END: {
-				//console.debug(`Invalid start state. (${offset} + 0)`);
-				return 0;
-				break;
-			};
-		};
-		// The only valid state for the first offset byte in the buffer at this point is RVLV_START.
-		let storedState = 3, // 1-3: END, MIDDLE, START
-		breakCrit = Math.min(buffer.length, 16);
-		for (let i = 1; i < breakCrit; i ++) {
-			let e = buffer[i + offset],
-			currentState = e >> 6;
-			if (
-				currentState === 0 ||
-				(storedState === 3 && (0b00001001 >> currentState & 1)) ||
-				(storedState === 2 && currentState > storedState)
-			) {
-				//console.debug(`Invalid transitioning state: ${storedState} → ${currentState}. (${offset} + 0)`);
-				return 0;
-			} else if (currentState === 1) {
-				return i + 1;
-			};
-			storedState = currentState;
-		};
-		return 0; // Failure.
 	};
 	static lengthRVLV(value) {
 		this.#ensureNumber(value);
