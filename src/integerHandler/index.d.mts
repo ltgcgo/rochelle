@@ -19,7 +19,7 @@ import type {
 } from "../nativeType/index.d.mts";
 
 /** Common properties shared by all handlers. */
-export class BaseIntegerHandler {
+declare class BaseIntegerHandler {
 	/** When set to true, methods will use runtime-native APIs and WebAssembly over the pure-JS implementation. */
 	static useNative: boolean;
 	/** When set to true, methods will error out instead of emitting warnings at places. */

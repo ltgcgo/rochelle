@@ -12,6 +12,7 @@ export default class BaseIntegerHandler {
 	static #unsafeType = false;
 	static #ensureUnsafe() {};
 	/** @param {unknown} buffer
+	* @protected
 	* @returns {buffer is import("../nativeType/index.d.mts").Uint8Arrays => void} */
 	static #ensureU8Safe(buffer) {
 		/*if (buffer.constructor !== Uint8Array && buffer.constructor !== Uint8ClampedArray) {
@@ -29,6 +30,7 @@ export default class BaseIntegerHandler {
 		};
 	};
 	/** @param {unknown} value
+	* @protected
 	* @returns {value is number => void} */
 	static #ensureNumberSafe(value) {
 		if (typeof value !== "number") {
@@ -39,6 +41,7 @@ export default class BaseIntegerHandler {
 		};
 	};
 	/** @param {unknown} value
+	* @protected
 	* @returns {value is bigint => void} */
 	static #ensureBigIntSafe(value) {
 		if (typeof value !== "bigint") {
@@ -65,7 +68,8 @@ export default class BaseIntegerHandler {
 	};
 	/** @type {WeakMap<import("../nativeType/index.d.mts").TypedArray, DataView>} */
 	static #wmapDataView = new WeakMap();
-	/** @param {import("../nativeType/index.d.mts").TypedArray} typedArray  */
+	/** @param {import("../nativeType/index.d.mts").TypedArray} typedArray
+	* @protected */
 	static grabDataView(typedArray) {
 		let wmapResult = this.#wmapDataView.get(typedArray);
 		if (wmapResult == null) {
@@ -76,7 +80,7 @@ export default class BaseIntegerHandler {
 			return wmapResult;
 		};
 	};
-	/** @param {bigint} value  */
+	/** @param {bigint} value */
 	static bitsBigUint(value) {
 		// f64 thinks 2^1024-1 is too large, so I can't exploit F-I mantissa-exponent casting. Ouch.
 		if (value < 0n) {

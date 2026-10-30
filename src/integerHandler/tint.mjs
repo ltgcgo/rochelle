@@ -1,6 +1,5 @@
 // 2025-2026 © Lightingale Community
 // Licensed under GNU LGPL v3.0 license.
-// Originally from Seamstress.
 
 "use strict";
 
