@@ -20,7 +20,6 @@ export default class IntegerHandler {
 	static useNative = true;
 	static useStrict = true;
 	static #unsafeType = false;
-	static #hiddenDataView = Symbol("Key for the hidden DataView.");
 	static #ensureUnsafe() {};
 	static #ensureU8Safe(buffer) {
 		/*if (buffer.constructor !== Uint8Array && buffer.constructor !== Uint8ClampedArray) {
@@ -68,12 +67,16 @@ export default class IntegerHandler {
 			this.#ensureBigInt = this.#ensureBigIntSafe;
 		};
 	};
+	static #wmapDataView = new WeakMap();
 	static #obtainDataView(typedArray) {
-		// Can use a WeakMap instead.
-		if (!typedArray[this.#hiddenDataView]) {
-			typedArray[this.#hiddenDataView] = new DataView(typedArray.buffer, typedArray.byteOffset, typedArray.byteLength);
+		let wmapResult = this.#wmapDataView.get(typedArray);
+		if (wmapResult == null) {
+			wmapResult = new DataView(typedArray.buffer, typedArray.byteOffset, typedArray.byteLength);
+			this.#wmapDataView.set(typedArray, wmapResult);
+			return wmapResult;
+		} else {
+			return wmapResult;
 		};
-		return typedArray[this.#hiddenDataView];
 	};
 	static bitsBigUint(value) {
 		// f64 thinks 2^1024-1 is too large, so I can't exploit F-I mantissa-exponent casting. Ouch.
@@ -123,6 +126,7 @@ export default class IntegerHandler {
 			return Number(BigInt.asUintN(16, rawExponent)) - 1022;
 		};
 	};
+	// Standard MIDI VLV-8, slightly extended.
 	static readVLV(buffer, offset = 0) {
 		// VLV-8 are all big-endian.
 		this.#ensureU8(buffer);
@@ -251,6 +255,7 @@ export default class IntegerHandler {
 		this.writeVLVBigInt(buffer, value);
 		return buffer;
 	};
+	// Reversible VLV-8, built on top of the MIDI VLV-8 idea. Accidentally recreated the packet continuation state in MIDI 2.0.
 	static readRVLV(buffer, offset = 0) {
 		this.#ensureU8(buffer);
 		switch (buffer[offset] & this.MASK_RVLV) {
@@ -379,6 +384,7 @@ export default class IntegerHandler {
 		};
 		return value === 0n ? 1 : Math.floor((this.bitsBigUint(value) + 5) / 6);
 	};
+	// Standard value reads and writes.
 	static readBool(buffer, offset = 0) {
 		/*if (this.useNative && wasmExports) {
 			return wasmExports.readBitAt(buffer[offset >> 3], offset);
