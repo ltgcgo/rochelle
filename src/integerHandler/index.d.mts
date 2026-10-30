@@ -97,7 +97,7 @@ export class TIntReader extends BaseIntegerHandler {
 }
 
 /** Readers and writers for various forms of numeric values. */
-export class NativeHandler {
+export class NativeHandler extends BaseIntegerHandler {
 	/** Reads a boolean, returned as one of `0` (`false`) and `1` (`true`). Will error out if out of bounds. One byte has 8 individual bits. `85` will be expanded to `[1, 0, 1, 0, 1, 0, 1, 0]`, while `170` will be expanded to `[0, 1, 0, 1, 0, 1, 0, 1]`. */
 	static readBool(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Reads an int8 value. Will error out if out of bounds. */
