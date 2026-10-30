@@ -13,7 +13,7 @@ export default class BaseIntegerHandler {
 	static #ensureUnsafe() {};
 	/** @param {unknown} buffer
 	* @protected
-	* @returns {buffer is import("../nativeType/index.d.mts").Uint8Arrays => void} */
+	* @returns {asserts buffer is import("../nativeType/index.d.mts").Uint8Arrays} */
 	static #ensureU8Safe(buffer) {
 		/*if (buffer.constructor !== Uint8Array && buffer.constructor !== Uint8ClampedArray) {
 			throw(new TypeError("Input must be a Uint8Array."));
@@ -31,7 +31,7 @@ export default class BaseIntegerHandler {
 	};
 	/** @param {unknown} value
 	* @protected
-	* @returns {value is number => void} */
+	* @returns {asserts value is number} */
 	static #ensureNumberSafe(value) {
 		if (typeof value !== "number") {
 			throw(new TypeError("Input must be a number."));
@@ -42,7 +42,7 @@ export default class BaseIntegerHandler {
 	};
 	/** @param {unknown} value
 	* @protected
-	* @returns {value is bigint => void} */
+	* @returns {asserts value is bigint} */
 	static #ensureBigIntSafe(value) {
 		if (typeof value !== "bigint") {
 			throw(new TypeError("Input must be a BigInt."));

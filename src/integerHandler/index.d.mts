@@ -15,11 +15,12 @@ import type {
 	uint16,
 	uint32,
 	uint64,
-	Uint8Arrays
+	Uint8Arrays,
+	TypedArray
 } from "../nativeType/index.d.mts";
 
 /** Common properties shared by all handlers. */
-declare class BaseIntegerHandler {
+export class BaseIntegerHandler {
 	/** When set to true, methods will use runtime-native APIs and WebAssembly over the pure-JS implementation. */
 	static useNative: boolean;
 	/** When set to true, methods will error out instead of emitting warnings at places. */
@@ -28,6 +29,10 @@ declare class BaseIntegerHandler {
 	static unsafeType: boolean;
 	/** Counts the total bits required to store an unsigned BigInt. `0` is `0`, parallel to `Math.clz32`. */
 	static bitsBigUint(value: bigint): uint32;
+	protected static assertU8(buffer: unknown): asserts buffer is Uint8Arrays;
+	protected static assertNumber(value: unknown): asserts value is number;
+	protected static assertBigInt(value: unknown): asserts value is bigint;
+	protected static grabDataView(typedArray: TypedArray): DataView;
 }
 
 /** Read-only handlers for standard MIDI VLV-8. */
