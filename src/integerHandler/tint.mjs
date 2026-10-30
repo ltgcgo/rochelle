@@ -6,6 +6,8 @@
 import BaseIntegerHandler from "./base.mjs";
 import NativeHandler from "./native.mjs";
 
+const errorMsgNC = `Encountered a non-canonical tagged integer.`;
+
 const TIntReader = class TIntReader extends BaseIntegerHandler {
 	// Tagged integers. Signed variants are extensions.
 	// Currently only seen in Open ModPlug Tracker and called "adaptive integer", which is just a misnomer.
@@ -34,6 +36,13 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 			};
 			case 2: {
 				result = NativeHandler.readUint16(buffer, true, offset);
+				if (result <= 0xff) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			default: {
@@ -57,6 +66,13 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 			};
 			case 2: {
 				result = NativeHandler.readInt16(buffer, true, offset);
+				if (result <= 0x7f && result >= -0x80) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			default: {
@@ -89,14 +105,35 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 			};
 			case 2: {
 				result = NativeHandler.readUint16(buffer, true, offset);
+				if (result <= 0xff) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			case 3: {
 				result = NativeHandler.readUint24(buffer, true, offset);
+				if (result <= 0xffff) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			case 4: {
 				result = NativeHandler.readUint32(buffer, true, offset);
+				if (result <= 0xffffff) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			default: {
@@ -120,14 +157,35 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 			};
 			case 2: {
 				result = NativeHandler.readInt16(buffer, true, offset);
+				if (result <= 0x7f && result >= -0x80) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			case 3: {
 				result = NativeHandler.readInt24(buffer, true, offset);
+				if (result <= 0x7fff && result >= -0x8000) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			case 4: {
 				result = NativeHandler.readInt32(buffer, true, offset);
+				if (result <= 0x7fffff && result >= -0x800000) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			default: {
@@ -158,11 +216,27 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 				break;
 			};
 			case 2: {
-				return NativeHandler.readUint16(buffer, true, offset) >>> 2;
+				const result = NativeHandler.readUint16(buffer, true, offset) >>> 2;
+				if (result <= 0x3f) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
+				return result;
 				break;
 			};
 			case 4: {
-				return NativeHandler.readUint32(buffer, true, offset) >>> 2;
+				const result = NativeHandler.readUint32(buffer, true, offset) >>> 2;
+				if (result <= 0x3fff) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
+				return result;
 				break;
 			};
 			case 8: {
@@ -170,8 +244,16 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 				if (NativeHandler.readUint16(buffer, true, offset + 6) > 0) {
 					throw(new RangeError(`Invalid tagged 64-bit integer read state.`));
 				} else {
+					const high16Bit = NativeHandler.readUint16(buffer, true, offset + 4);
+					if (high16Bit <= 0x3fffffff) {
+						if (this.useStrict) {
+							throw(new TypeError(errorMsgNC));
+						} else {
+							console.warn(errorMsgNC);
+						};
+					};
 					const low30Bit = NativeHandler.readUint32(buffer, true, offset) >>> 2;
-					return NativeHandler.readUint16(buffer, true, offset + 4) * 0x40000000 + low30Bit;
+					return high16Bit * 0x40000000 + low30Bit;
 				};
 				break;
 			};
@@ -193,24 +275,40 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 				break;
 			};
 			case 2: {
-				return NativeHandler.readInt16(buffer, true, offset) >> 2;
+				const result = NativeHandler.readInt16(buffer, true, offset) >> 2;
+				if (result <= 0x3f && result >= -0x40) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
+				return result;
 				break;
 			};
 			case 4: {
-				return NativeHandler.readInt32(buffer, true, offset) >> 2;
+				const result = NativeHandler.readInt32(buffer, true, offset) >> 2;
+				if (result <= 0x3fff && result >= -0x4000) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
+				return result;
 				break;
 			};
 			case 8: {
 				// This actually allows [-2⁴⁶, 2⁴⁶), as the highest 16-bits handled the sign bit.
 				switch (NativeHandler.readUint16(buffer, true, offset + 6)) {
 					case 0x0000: {
-						const low30Bit = NativeHandler.readUint32(buffer, true, offset) >>> 2;
-						return NativeHandler.readUint16(buffer, true, offset + 4) * 0x40000000 + low30Bit;
+						const high16Bit = NativeHandler.readUint16(buffer, true, offset + 4);
+						return high16Bit * 0x40000000 + (NativeHandler.readUint32(buffer, true, offset) >>> 2);
 						break;
 					};
 					case 0xffff: {
-						const low30BitFlipped = NativeHandler.readUint32(buffer, true, offset) >>> 2;
 						const high16BitFlipped = NativeHandler.readUint16(buffer, true, offset + 4);
+						const low30BitFlipped = NativeHandler.readUint32(buffer, true, offset) >>> 2;
 						return -((high16BitFlipped ^ 0xffff) * 0x40000000 + (low30BitFlipped ^ 0x3fffffff)) - 1; // Do you like two's complement?
 						break;
 					};
@@ -240,15 +338,36 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 			};
 			case 2: {
 				result = BigInt(NativeHandler.readUint16(buffer, true, offset));
+				if (result <= 0xffn) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			case 4: {
 				result = BigInt(NativeHandler.readUint32(buffer, true, offset));
+				if (result <= 0xffffn) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			case 8: {
 				// Must not reach 2⁴⁸!
 				result = NativeHandler.readUint64(buffer, true, offset);
+				if (result <= 0xffffffffn) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			default: {
@@ -271,16 +390,37 @@ const TIntReader = class TIntReader extends BaseIntegerHandler {
 				break;
 			};
 			case 2: {
-				result = BigInt(NativeHandler.readUint16(buffer, true, offset));
+				result = BigInt(NativeHandler.readInt16(buffer, true, offset));
+				if (result <= 0x7fn && result >= -0x80n) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			case 4: {
-				result = BigInt(NativeHandler.readUint32(buffer, true, offset));
+				result = BigInt(NativeHandler.readInt32(buffer, true, offset));
+				if (result <= 0x7fffn && result >= -0x8000n) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			case 8: {
 				// Must not reach 2⁴⁸!
 				result = NativeHandler.readInt64(buffer, true, offset);
+				if (result <= 0x7fffffffn && result >= -0x80000000n) {
+					if (this.useStrict) {
+						throw(new TypeError(errorMsgNC));
+					} else {
+						console.warn(errorMsgNC);
+					};
+				};
 				break;
 			};
 			default: {

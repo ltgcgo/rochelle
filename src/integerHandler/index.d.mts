@@ -23,7 +23,8 @@ import type {
 export class BaseIntegerHandler {
 	/** When set to true, methods will use runtime-native APIs and WebAssembly over the pure-JS implementation. */
 	static useNative: boolean;
-	/** When set to true, methods will error out instead of emitting warnings at places. */
+	/** Defaults to true. When set to true, methods will throw instead of emitting warnings at certain places, including but not limited to:
+	* - Encoding canonicality test: Non-canonical encodings are one of the common sources of security vulnerabilities. If compatibility outweighs potential vulnerability, you can disable the strict check. */
 	static useStrict: boolean;
 	/** When set to true, methods will no longer conduct type checks. Usually has negligible performance impact unless on poorly-optimized runtimes. */
 	static unsafeType: boolean;
@@ -35,7 +36,7 @@ export class BaseIntegerHandler {
 	protected static grabDataView(typedArray: TypedArray): DataView;
 }
 
-/** Read-only handlers for standard MIDI VLV-8. */
+/** Read-only handlers for standard MIDI VLV-8. Unlike LEB128, MIDI VLV-8 is big-endian. */
 export class VLVReader extends BaseIntegerHandler {
 	/** Counts the size of a standard MIDI VLV in bytes, up to `16`. Will return `0` when incomplete or failed (expected size goes over `16`). */
 	static sizeVLV(buffer: Uint8Arrays, offset?: number): uint8;
@@ -43,13 +44,17 @@ export class VLVReader extends BaseIntegerHandler {
 	static lengthVLV(value: number): uint8;
 	/** Counts the size of an integer to be emitted as a standard MIDI VLV in bytes. Will return 0 when failed. */
 	static lengthVLVBigInt(value: bigint): uint8;
-	/** Reads a standard MIDI VLV from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out. */
+	/** Reads a standard MIDI VLV from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readVLV(buffer: Uint8Arrays, offset?: number): number;
-	/** Reads a standard MIDI VLV from a `Uint8Array` or a `Uint8ClampedArray` into a BigInt. Will be clamped to 16 bytes, after which it will error out. */
+	/** Reads a standard MIDI VLV from a `Uint8Array` or a `Uint8ClampedArray` into a BigInt. Will be clamped to 16 bytes, after which it will error out.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readVLVBigInt(buffer: Uint8Arrays, offset?:number): bigint;
 }
 
-/** Readers and writers for standard MIDI VLV-8. */
+/** Readers and writers for standard MIDI VLV-8. Unlike LEB128, MIDI VLV-8 is big-endian. */
 export class VLVHandler extends VLVReader {
 	/** Writes a standard MIDI VLV to a `Uint8Array` or a `Uint8ClampedArray` from a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out. */
 	static writeVLV(buffer: Uint8Arrays, value: number, offset?: number): void;
@@ -79,25 +84,39 @@ export class RVLVReader extends BaseIntegerHandler {
 export class TIntReader extends BaseIntegerHandler {
 	/** Counts the size of a tagged 16-bit integer in bytes. Will return 0 when failed. */
 	static sizeTInt16(buffer: Uint8Arrays, offset?: number): uint8;
-	/** Reads a tagged 16-bit unsigned integer in bytes. */
+	/** Reads a tagged 16-bit unsigned integer in bytes.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readTUint16(buffer: Uint8Arrays, offset?: number): uint16;
-	/** Reads a tagged 16-bit signed integer in bytes. */
+	/** Reads a tagged 16-bit signed integer in bytes.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readTInt16(buffer: Uint8Arrays, offset?: number): int16;
 	/** Counts the size of a tagged 32-bit integer in bytes. Will return 0 when failed. */
 	static sizeTInt32(buffer: Uint8Arrays, offset?: number): uint8;
-	/** Reads a tagged 32-bit unsigned integer in bytes. */
+	/** Reads a tagged 32-bit unsigned integer in bytes.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readTUint32(buffer: Uint8Arrays, offset?: number): uint32;
-	/** Reads a tagged 32-bit signed integer in bytes. */
+	/** Reads a tagged 32-bit signed integer in bytes.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readTInt32(buffer: Uint8Arrays, offset?: number): int32;
 	/** Counts the size of a tagged 64-bit integer in bytes. Will return 0 when failed. */
 	static sizeTInt64(buffer: Uint8Arrays, offset?: number): uint8;
-	/** Reads a tagged 64-bit unsigned integer in bytes. Values exceeding [0, 2⁴⁶) will error out. */
+	/** Reads a tagged 64-bit unsigned integer in bytes. Values exceeding [0, 2⁴⁶) will error out.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readTUint64(buffer: Uint8Arrays, offset?: number): number;
 	/** Reads a tagged 64-bit signed integer in bytes. Values exceeding [-2⁴⁶, 2⁴⁶) will error out. */
 	static readTInt64(buffer: Uint8Arrays, offset?: number): number;
-	/** Reads a tagged 64-bit unsigned integer as `BigInt` in bytes. */
+	/** Reads a tagged 64-bit unsigned integer as `BigInt` in bytes.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readTBigUint64(buffer: Uint8Arrays, offset?: number): uint64;
-	/** Reads a tagged 64-bit signed integer as `BigInt` in bytes. */
+	/** Reads a tagged 64-bit signed integer as `BigInt` in bytes.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readTBigInt64(buffer: Uint8Arrays, offset?: number): int64;
 }
 
