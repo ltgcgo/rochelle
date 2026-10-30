@@ -134,9 +134,11 @@ export class TIntReader extends BaseIntegerHandler {
 	static sizeTInt64(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Reads a tagged 64-bit unsigned integer in bytes. Values exceeding [0, 2⁴⁶) will error out.
 	*
-	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. Canonicality checks currently does not work as expected. */
 	static readTUint64(buffer: Uint8Arrays, offset?: number): number;
-	/** Reads a tagged 64-bit signed integer in bytes. Values exceeding [-2⁴⁶, 2⁴⁶) will error out. */
+	/** Reads a tagged 64-bit signed integer in bytes. Values exceeding [-2⁴⁶, 2⁴⁶) will error out.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. Canonicality checks currently does not work as expected. */
 	static readTInt64(buffer: Uint8Arrays, offset?: number): number;
 	/** Reads a tagged 64-bit unsigned integer as `BigInt` in bytes.
 	*
@@ -144,7 +146,7 @@ export class TIntReader extends BaseIntegerHandler {
 	static readTBigUint64(buffer: Uint8Arrays, offset?: number): uint64;
 	/** Reads a tagged 64-bit signed integer as `BigInt` in bytes.
 	*
-	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. Canonicality checks currently does not work as expected. */
 	static readTBigInt64(buffer: Uint8Arrays, offset?: number): int64;
 }
 
