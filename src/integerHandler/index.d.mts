@@ -36,37 +36,43 @@ export class BaseIntegerHandler {
 	protected static grabDataView(typedArray: TypedArray): DataView;
 }
 
-/** Read-only handlers for standard MIDI VLV-8. Unlike LEB128, MIDI VLV-8 is big-endian. */
+/** Read-only handlers for standard MIDI VLV-8, a big-endian multi-byte variable width encoding scheme. Unlike LEB128, MIDI VLV-8 is big-endian.
+*
+* This encoding scheme is **not** self-synchronising. */
 export class VLVReader extends BaseIntegerHandler {
 	/** Counts the size of a standard MIDI VLV in bytes, up to `16`. Will return `0` when incomplete or failed (expected size goes over `16`). */
-	static sizeVLV(buffer: Uint8Arrays, offset?: number): uint8;
+	static size(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Counts the size of an integer to be emitted as a standard MIDI VLV in bytes. Will return 0 when failed. */
-	static lengthVLV(value: number): uint8;
+	static length(value: number): uint8;
 	/** Counts the size of an integer to be emitted as a standard MIDI VLV in bytes. Will return 0 when failed. */
-	static lengthVLVBigInt(value: bigint): uint8;
+	static lengthBigInt(value: bigint): uint8;
 	/** Reads a standard MIDI VLV from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out.
 	*
 	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
-	static readVLV(buffer: Uint8Arrays, offset?: number): number;
+	static read(buffer: Uint8Arrays, offset?: number): number;
 	/** Reads a standard MIDI VLV from a `Uint8Array` or a `Uint8ClampedArray` into a BigInt. Will be clamped to 16 bytes, after which it will error out.
 	*
 	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
-	static readVLVBigInt(buffer: Uint8Arrays, offset?:number): bigint;
+	static readBigInt(buffer: Uint8Arrays, offset?:number): bigint;
 }
 
-/** Readers and writers for standard MIDI VLV-8. Unlike LEB128, MIDI VLV-8 is big-endian. */
+/** Readers and writers for standard MIDI VLV-8, a big-endian multi-byte variable width encoding scheme. Unlike LEB128, MIDI VLV-8 is big-endian.
+*
+* This encoding scheme is **not** self-synchronising. */
 export class VLVHandler extends VLVReader {
 	/** Writes a standard MIDI VLV to a `Uint8Array` or a `Uint8ClampedArray` from a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out. */
-	static writeVLV(buffer: Uint8Arrays, value: number, offset?: number): void;
+	static write(buffer: Uint8Arrays, value: number, offset?: number): void;
 	/** Writes a standard MIDI VLV to a `Uint8Array` or a `Uint8ClampedArray` from a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out. */
-	static writeVLVBigInt(buffer: Uint8Arrays, value: bigint, offset?: number): void;
+	static writeBigInt(buffer: Uint8Arrays, value: bigint, offset?: number): void;
 	/** Writes a standard MIDI VLV to a `Uint8Array` or a `Uint8ClampedArray` from a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out. */
-	static emitVLV(value: number): Uint8Array;
+	static emit(value: number): Uint8Array;
 	/** Writes a standard MIDI VLV to a `Uint8Array` or a `Uint8ClampedArray` from a standard JavaScript number. Will be clamped to 16 bytes, after which it will error out. */
-	static emitVLVBigInt(value: bigint): Uint8Array;
+	static emitBigInt(value: bigint): Uint8Array;
 }
 
-/** Read-only handlers for reversible VLV-8. This encoding scheme is self-synchronising. */
+/** Read-only handlers for reversible VLV-8, a big-endian multi-byte variable width encoding scheme.
+*
+* This encoding scheme is self-synchronising. */
 export class RVLVReader extends BaseIntegerHandler {
 	/** Counts the size of a reversible VLV in bytes, up to `16`. Will return 0 when failed (expected size goes over `16`). */
 	static sizeRVLV(buffer: Uint8Arrays, offset?: number): uint8;
@@ -80,7 +86,29 @@ export class RVLVReader extends BaseIntegerHandler {
 	static readRVLVBigInt(buffer: Uint8Arrays, offset?: number): bigint;
 }
 
-/** Read-only handlers for OpenMPT tagged integers. */
+/** (WIP) Read-only handlers for LEB128, a little-endian multi-byte variable width encoding scheme. Unlike MIDI VLV-8, LEB128 is little-endian.
+*
+* This encoding scheme is **not** self-synchronising. */
+export class LEBReader extends BaseIntegerHandler {
+	/** Counts the size of a LEB128 value in bytes, up to `16`. Will return `0` when incomplete or failed (expected size goes over `16`). */
+	static size(buffer: Uint8Arrays, offset?: number): uint8;
+	/** Counts the size of an integer to be emitted as a LEB128 value in bytes. Will return 0 when failed. */
+	static length(value: number): uint8;
+	/** Counts the size of an integer to be emitted as a LEB128 value in bytes. Will return 0 when failed. */
+	static lengthBigInt(value: bigint): uint8;
+	/** Reads a LEB128 value from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
+	static read(buffer: Uint8Arrays, offset?: number): number;
+	/** Reads a LEB128 value from a `Uint8Array` or a `Uint8ClampedArray` into a BigInt. Will be clamped to 16 bytes, after which it will error out.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
+	static readBigInt(buffer: Uint8Arrays, offset?:number): bigint;
+}
+
+/** Read-only handlers for OpenMPT tagged integers, a little-endian multi-byte variable width encoding scheme.
+*
+* This encoding scheme is self-synchronising. */
 export class TIntReader extends BaseIntegerHandler {
 	/** Counts the size of a tagged 16-bit integer in bytes. Will return 0 when failed. */
 	static sizeTInt16(buffer: Uint8Arrays, offset?: number): uint8;
@@ -118,6 +146,22 @@ export class TIntReader extends BaseIntegerHandler {
 	*
 	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
 	static readTBigInt64(buffer: Uint8Arrays, offset?: number): int64;
+}
+
+/** (WIP) Read-only handlers for slightly extended Unicode Codepoint Transformation Format, a big-endian multi-byte variable width encoding scheme. The encoding space has been expanded from 4 bytes of the original UTF-8 to 8 bytes, permitting values within the [0, 2⁴²) range.
+*
+* This encoding scheme is self-synchronising. */
+export class UCTFReader extends BaseIntegerHandler {
+	/** Counts the size of a UCTF value in bytes, up to `8`. Will return `0` when incomplete or failed (expected size goes over `8`). */
+	static size(buffer: Uint8Arrays, offset?: number): uint8;
+	/** Counts the size of an integer to be emitted as a UCTF value in bytes. Will return 0 when failed. */
+	static length(value: number): uint8;
+	/** Counts the size of an integer to be emitted as a UCTF value in bytes. Will return 0 when failed. */
+	static lengthBigInt(value: bigint): uint8;
+	/** Reads a UCTF value from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number.
+	*
+	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
+	static read(buffer: Uint8Arrays, offset?: number): number;
 }
 
 /** Readers and writers for various forms of numeric values. */

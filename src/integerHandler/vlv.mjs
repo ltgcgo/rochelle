@@ -43,7 +43,7 @@ const VLVReader = class VLVReader extends BaseIntegerHandler {
 		return value === 0n ? 1 : Math.floor((this.bitsBigUint(value) + 6) / 7);
 	};
 	/** @param {import("../nativeType/index.d.mts").TypedArray} buffer */
-	static readVLV(buffer, offset = 0) {
+	static read(buffer, offset = 0) {
 		// VLV-8 are all big-endian.
 		this.assertU8(buffer);
 		let breakCrit = Math.min(buffer.length - offset, 4),
@@ -77,7 +77,7 @@ const VLVReader = class VLVReader extends BaseIntegerHandler {
 		return result;
 	};
 	/** @param {import("../nativeType/index.d.mts").TypedArray} buffer */
-	static readVLVBigInt(buffer, offset = 0) {
+	static readBigInt(buffer, offset = 0) {
 		// VLV-8 are all big-endian.
 		this.assertU8(buffer);
 		let breakCrit = Math.min(buffer.length - offset, 16),
@@ -113,7 +113,7 @@ const VLVReader = class VLVReader extends BaseIntegerHandler {
 };
 
 const VLVHandler = class VLVHandler extends VLVReader {
-	static writeVLV(buffer, value, offset = 0) {
+	static write(buffer, value, offset = 0) {
 		this.assertU8(buffer);
 		this.assertNumber(value);
 		const vlvSize = this.length(value);
@@ -124,7 +124,7 @@ const VLVHandler = class VLVHandler extends VLVReader {
 			view >>= 7;
 		};
 	};
-	static writeVLVBigInt(buffer, value, offset = 0) {
+	static writeBigInt(buffer, value, offset = 0) {
 		this.assertU8(buffer);
 		this.assertBigInt(value);
 		const vlvSize = this.lengthBigInt(value);
@@ -135,14 +135,14 @@ const VLVHandler = class VLVHandler extends VLVReader {
 			view >>= 7n;
 		};
 	};
-	static emitVLV(value) {
+	static emit(value) {
 		const buffer = new Uint8Array(this.length(value));
-		this.writeVLV(buffer, value);
+		this.write(buffer, value);
 		return buffer;
 	};
-	static emitVLVBigInt(value) {
+	static emitBigInt(value) {
 		const buffer = new Uint8Array(this.lengthBigInt(value));
-		this.writeVLVBigInt(buffer, value);
+		this.writeBigInt(buffer, value);
 		return buffer;
 	};
 };
