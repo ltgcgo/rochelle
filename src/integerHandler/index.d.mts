@@ -81,15 +81,15 @@ export class RVLVReader extends BaseIntegerHandler {
 	static RVLV_END: 64;
 	static RVLV_SINGLE: 0;
 	/** Counts the size of a reversible VLV in bytes, up to `16`. Will return 0 when failed (expected size goes over `16`). */
-	static sizeRVLV(buffer: Uint8Arrays, offset?: number): uint8;
+	static size(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Counts the size of an integer to be emitted as a reversible VLV in bytes. Will return 0 when failed. */
-	static lengthRVLV(value: number): number;
+	static length(value: number): number;
 	/** Counts the size of an integer to be emitted as a reversible VLV in bytes. Will return 0 when failed. */
-	static lengthRVLVBigInt(value: bigint): number;
+	static lengthBigInt(value: bigint): number;
 	/** Reads a reversible VLV from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out. Invalid RVLV values will also error out. */
-	static readRVLV(buffer: Uint8Arrays, offset?: number): number;
+	static read(buffer: Uint8Arrays, offset?: number): number;
 	/** Reads a reversible VLV from a `Uint8Array` or a `Uint8ClampedArray` into a BigInt. Will be clamped to 16 bytes, after which it will error out. Invalid RVLV values will also error out. */
-	static readRVLVBigInt(buffer: Uint8Arrays, offset?: number): bigint;
+	static readBigInt(buffer: Uint8Arrays, offset?: number): bigint;
 }
 
 /** (WIP) Read-only handlers for LEB128, a little-endian multi-byte variable width encoding scheme. Unlike MIDI VLV-8, LEB128 is little-endian.
