@@ -145,19 +145,31 @@ import DSVParser from "../dsvParse/index.mjs";
 
 {
 	const beiObject = {}, collapsedLabelsObject = {}, idObject = {}, idReverseMap = [];
+	const sstObject = {
+		"sst": {},
+		"whatwg": {}
+	};
 	let id = 0;
 	for await (let line of DSVParser.parseObjects(0, TextReader.line((await Deno.open("./src/data/encodings.tsv")).readable))) {
 		beiObject[line.nominal] = parseInt(line.bei);
+		sstObject.sst[line.nominal] = parseInt(line.sst);
 		collapsedLabelsObject[line.nominal] = line.nominal;
 		idObject[line.nominal] = id;
 		idReverseMap.push(line.nominal);
-		for (const label of line.accepted.split(",")) {
+		for (const label of line.accepted?.split(",") ?? []) {
 			collapsedLabelsObject[label] = line.nominal;
 			idObject[label] = id;
+			sstObject.whatwg[label] = true;
+		};
+		for (const label of line.extras?.split(",") ?? []) {
+			collapsedLabelsObject[label] = line.nominal;
+			idObject[label] = id;
+			sstObject.whatwg[label] = false;
 		};
 		id ++;
 	};
-	await Deno.writeTextFile("./src/data/generated/bei.json", JSON.stringify(beiObject));
+	await Deno.writeTextFile("./src/data/generated/encodingBei.json", JSON.stringify(beiObject)); // Binary encoding indicator
+	await Deno.writeTextFile("./src/data/generated/encodingExtras.json", JSON.stringify(sstObject)); // Software support type & WHATWG status
 	await Deno.writeTextFile("./src/data/generated/collapsedLabels.json", JSON.stringify(collapsedLabelsObject));
 	await Deno.writeTextFile("./src/data/generated/idFrom.json", JSON.stringify(idObject));
 	await Deno.writeTextFile("./src/data/generated/idTo.json", JSON.stringify(idReverseMap));

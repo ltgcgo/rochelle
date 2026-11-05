@@ -6,14 +6,14 @@
 * @module cc.ltgc.rochelle.textEncoding */
 
 export default class TextEncoding {
-	static readonly BYTE_1: number;
-	static readonly BYTE_1_VL: number;
-	static readonly BYTE_2_LE: number;
-	static readonly BYTE_2_BE: number;
-	static readonly BYTE_3_LE: number;
-	static readonly BYTE_3_BE: number;
-	static readonly BYTE_4_LE: number;
-	static readonly BYTE_4_BE: number;
+	static readonly BYTE_1: 0;
+	static readonly BYTE_1_VL: 1;
+	static readonly BYTE_2_LE: 2;
+	static readonly BYTE_2_BE: 3;
+	static readonly BYTE_3_LE: 4;
+	static readonly BYTE_3_BE: 5;
+	static readonly BYTE_4_LE: 6;
+	static readonly BYTE_4_BE: 7;
 	/** Return the unit byte length from the given indicator.
 	* @param indicator The encoding indicator. */
 	static getUnitSize(indicator: number): number;
@@ -26,6 +26,12 @@ export default class TextEncoding {
 	/** Gets the encoding indicator of a collapsed label.
 	* @param collapsed The collapsed label. */
 	static indicator(collapsed: string): number;
+	/** Returns if a label is defined in the WHATWG encoding standard.
+	* @param label The label to be tested. */
+	static isWHATWG(label: string): number;
+	/** Gets the expected software support type of a collapsed label.
+	* @param collapsed The collapsed label. */
+	static sst(collapsed: string): number;
 	/** Gets a numeric ID from the provided text encoding label. Useful for single-pass switch optimisations.
 	*
 	* Numeric IDs are **NOT** guaranteed to be the same across versions! */

@@ -8,7 +8,8 @@
 // Maybe stateful encodings should be left unsupported, after all.
 
 import collapsedFromLabels from "../data/generated/collapsedLabels.json" with {type: "json"};
-import collapsedBEI from "../data/generated/bei.json" with {type: "json"};
+import collapsedBEI from "../data/generated/encodingBei.json" with {type: "json"};
+import collapsedExtras from "../data/generated/encodingExtras.json" with {type: "json"};
 import tableIdFromLabel from "../data/generated/idFrom.json" with {type: "json"};
 import tableIdToLabel from "../data/generated/idTo.json" with {type: "json"};
 
@@ -43,6 +44,16 @@ export default class TextEncoding {
 			throw(new TypeError(`Provided collapsed label "${collapsed}" is not supported.`));
 		};
 		return indicator;
+	};
+	static isWHATWG(label) {
+		return collapsedExtras.whatwg[label] ?? false;
+	};
+	static sst(collapsed) {
+		const expectedSupportType = collapsedExtras.sst[collapsed];
+		if (typeof expectedSupportType !== "number") {
+			throw(new TypeError(`Provided collapsed label "${collapsed}" is not supported.`));
+		};
+		return expectedSupportType;
 	};
 	static toId(label) {
 		const encodingId = tableIdFromLabel[label];
