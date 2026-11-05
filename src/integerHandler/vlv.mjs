@@ -27,7 +27,7 @@ const VLVReader = class VLVReader extends BaseIntegerHandler {
 		return 0; // Failure.
 	};
 	/** @param {number} value */
-	static length(value) {
+	static estimate(value) {
 		this.assertNumber(value);
 		if (value < 0 || value > 268435455) {
 			throw(new RangeError(`Input range invalid. Must be a non-negative integer below 2^28.`));
@@ -35,7 +35,7 @@ const VLVReader = class VLVReader extends BaseIntegerHandler {
 		return value === 0 ? 1 : Math.floor((38 - Math.clz32(value)) / 7);
 	};
 	/** @param {bigint} value */
-	static lengthBigInt(value) {
+	static estimateBigInt(value) {
 		this.assertBigInt(value);
 		if (value < 0n || value > 0xffffffffffffffffffffffffffffn) {
 			throw(new RangeError(`Input range invalid. Must be a non-negative integer below 2^112.`));
@@ -116,7 +116,7 @@ const VLVHandler = class VLVHandler extends VLVReader {
 	static write(buffer, value, offset = 0) {
 		this.assertU8(buffer);
 		this.assertNumber(value);
-		const vlvSize = this.length(value);
+		const vlvSize = this.estimate(value);
 		let view = value, setBit = 0;
 		for (let ptr = vlvSize - 1; ptr >= 0; ptr --) {
 			buffer[offset + ptr] = setBit | (view & 127);
@@ -127,7 +127,7 @@ const VLVHandler = class VLVHandler extends VLVReader {
 	static writeBigInt(buffer, value, offset = 0) {
 		this.assertU8(buffer);
 		this.assertBigInt(value);
-		const vlvSize = this.lengthBigInt(value);
+		const vlvSize = this.estimateBigInt(value);
 		let view = value, setBit = 0;
 		for (let ptr = vlvSize - 1; ptr >= 0; ptr --) {
 			buffer[offset + ptr] = setBit | Number(view & 127n);

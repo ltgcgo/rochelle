@@ -49,7 +49,7 @@ const RVLVReader = class RVLVReader extends BaseIntegerHandler {
 		return 0; // Failure.
 	};
 	/** @param {number} value */
-	static length(value) {
+	static estimate(value) {
 		this.assertNumber(value);
 		if (value < 0 || value > 16777215) {
 			throw(new RangeError(`Input range invalid. Must be a non-negative integer below 2^24.`));
@@ -57,7 +57,7 @@ const RVLVReader = class RVLVReader extends BaseIntegerHandler {
 		return value === 0 ? 1 : Math.floor((37 - Math.clz32(value)) / 6);
 	};
 	/** @param {bigint} value */
-	static lengthBigInt(value) {
+	static estimateBigInt(value) {
 		this.assertBigInt(value);
 		if (value < 0n || value > 0xffffffffffffffffffffffffn) {
 			throw(new RangeError(`Input range invalid. Must be a non-negative integer below 2^96.`));

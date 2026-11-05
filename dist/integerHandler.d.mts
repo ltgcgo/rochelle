@@ -44,9 +44,9 @@ export class VLVReader extends BaseIntegerHandler {
 	/** Counts the size of a standard MIDI VLV in bytes, up to `16`. Will return `0` when incomplete or failed (expected size goes over `16`). */
 	static size(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Counts the size of an integer to be emitted as a standard MIDI VLV in bytes. Will return 0 when failed. */
-	static length(value: number): uint8;
+	static estimate(value: number): uint8;
 	/** Counts the size of an integer to be emitted as a standard MIDI VLV in bytes. Will return 0 when failed. */
-	static lengthBigInt(value: bigint): uint8;
+	static estimateBigInt(value: bigint): uint8;
 	/** Reads a standard MIDI VLV from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out.
 	*
 	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
@@ -83,9 +83,9 @@ export class RVLVReader extends BaseIntegerHandler {
 	/** Counts the size of a reversible VLV in bytes, up to `16`. Will return 0 when failed (expected size goes over `16`). */
 	static size(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Counts the size of an integer to be emitted as a reversible VLV in bytes. Will return 0 when failed. */
-	static length(value: number): number;
+	static estimate(value: number): number;
 	/** Counts the size of an integer to be emitted as a reversible VLV in bytes. Will return 0 when failed. */
-	static lengthBigInt(value: bigint): number;
+	static estimateBigInt(value: bigint): number;
 	/** Reads a reversible VLV from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out. Invalid RVLV values will also error out. */
 	static read(buffer: Uint8Arrays, offset?: number): number;
 	/** Reads a reversible VLV from a `Uint8Array` or a `Uint8ClampedArray` into a BigInt. Will be clamped to 16 bytes, after which it will error out. Invalid RVLV values will also error out. */
@@ -99,9 +99,9 @@ export class LEBReader extends BaseIntegerHandler {
 	/** Counts the size of a LEB128 value in bytes, up to `16`. Will return `0` when incomplete or failed (expected size goes over `16`). */
 	static size(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Counts the size of an integer to be emitted as a LEB128 value in bytes. Will return 0 when failed. */
-	static length(value: number): uint8;
+	static estimate(value: number): uint8;
 	/** Counts the size of an integer to be emitted as a LEB128 value in bytes. Will return 0 when failed. */
-	static lengthBigInt(value: bigint): uint8;
+	static estimateBigInt(value: bigint): uint8;
 	/** Reads a LEB128 value from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number. Will be clamped to 4 bytes, after which it will error out.
 	*
 	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
@@ -163,9 +163,9 @@ export class UCTFReader extends BaseIntegerHandler {
 	/** Counts the size of a UCTF value in bytes, up to `8`. Will return `0` when incomplete or failed (expected size goes over `8`). */
 	static size(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Counts the size of an integer to be emitted as a UCTF value in bytes. Will return 0 when failed. */
-	static length(value: number): uint8;
+	static estimate(value: number): uint8;
 	/** Counts the size of an integer to be emitted as a UCTF value in bytes. Will return 0 when failed. */
-	static lengthBigInt(value: bigint): uint8;
+	static estimateBigInt(value: bigint): uint8;
 	/** Reads a UCTF value from a `Uint8Array` or a `Uint8ClampedArray` into a standard JavaScript number.
 	*
 	* If strict mode is enabled, non-canonical encodings will throw, otherwise warnings will be emitted. */
