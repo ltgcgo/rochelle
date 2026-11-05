@@ -22,6 +22,7 @@ iso-8859-13	0	latin7,l7,iso-8859-13,iso8859-13
 iso-8859-14	0	latin8,l8,iso-8859-14,iso8859-14
 iso-8859-15	0	latin9,l9,iso-8859-15,iso8859-15
 iso-8859-16	0	iso-8859-16,iso8859-16
+cp437	0	cp437
 cp866	0	cp866,ibm866,866
 cp1250	0	cp1250,windows-1250
 cp1251	0	cp1251,windows-1251
