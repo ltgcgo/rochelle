@@ -16,7 +16,7 @@ const blockedCodePoints = bufferFrom("base64", blockedCodePointsB64);
 
 /** @type {Map<string, TextEncoder>} */
 const textEncoders = new Map();
-const fallbackDecoder = new TextDecoder("l9");
+const fallbackDecoder = new TextDecoder(TextEncoding.collapse("l9"));
 const getDecoders = (labels = []) => {
 	const decoderSetup = {
 		"fatal": true,
@@ -109,7 +109,7 @@ const BinaryString = class BinaryString {
 		};
 		if (decodeFailure || !upThis.text) {
 			upThis.text = fallbackDecoder.decode(buffer);
-			upThis.label = "l9";
+			upThis.label = TextEncoding.collapse("l9");
 			upThis.debugMode && console.debug(`Text decoding failed: ${decodeFailure?.name ?? "<anonymous>"} - ${decodeFailure?.message ?? "Nothing."}. Used fallback encoding.`);
 		};
 		upThis.buffer = buffer;
