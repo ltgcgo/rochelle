@@ -44,6 +44,6 @@ sjis	1	2	sjis,csshiftjis,ms932,ms_kanji,shift-jis,shift_jis,windows-31j,x-sjis	j
 iso-2022-jp	1	2	iso-2022-jp,csiso2022jp	
 iso-2022-kr	1	1	iso-2022-kr,csiso2022kr	
 iso-2022-cn	1	1	iso-2022-cn,iso-2022-cn-ext,hz-gb-2312	
-tcvn-5773-1993	1	0		vietnamese,tcvn-5773-1993
+tcvn-5773	1	0		vietnamese,tcvn-5773,tcvn-5773:1993
 replacement	0	1	replacement	
 x-user-defined	0	2	x-user-defined	
