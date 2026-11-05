@@ -12,6 +12,9 @@ const bigIntCastCeil = (1n << 1023n);
 const linkedF64View = new Float64Array(1);
 const linkedU64View = new BigUint64Array(linkedF64View.buffer);
 
+/** @type {WeakMap<import("../nativeType/index.d.mts").TypedArray, DataView>} */
+const globalWmapDataView = new WeakMap();
+
 export default class BaseIntegerHandler {
 	static useNative = true;
 	static useStrict = true;
@@ -72,15 +75,13 @@ export default class BaseIntegerHandler {
 			this.assertBigInt = this.#ensureBigIntSafe;
 		};
 	};
-	/** @type {WeakMap<import("../nativeType/index.d.mts").TypedArray, DataView>} */
-	static #wmapDataView = new WeakMap();
 	/** @param {import("../nativeType/index.d.mts").TypedArray} typedArray
 	* @protected */
 	static grabDataView(typedArray) {
-		let wmapResult = this.#wmapDataView.get(typedArray);
+		let wmapResult = globalWmapDataView.get(typedArray);
 		if (wmapResult == null) {
 			wmapResult = new DataView(typedArray.buffer, typedArray.byteOffset, typedArray.byteLength);
-			this.#wmapDataView.set(typedArray, wmapResult);
+			globalWmapDataView.set(typedArray, wmapResult);
 			return wmapResult;
 		} else {
 			return wmapResult;
