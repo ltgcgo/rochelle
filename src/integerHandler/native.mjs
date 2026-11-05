@@ -8,12 +8,6 @@ import BaseIntegerHandler from "./base.mjs";
 
 // Can only import the base.
 
-const bigIntMaxBoundary = (1n << 1024n) - 1n;
-const bigIntCastCeil = (1n << 1023n);
-
-const linkedF64View = new Float64Array(1);
-const linkedU64View = new BigUint64Array(linkedF64View.buffer);
-
 export default class NativeHandler extends BaseIntegerHandler {
 	// Standard value reads and writes.
 	/** @param {import("../nativeType/index.d.mts").TypedArray} buffer

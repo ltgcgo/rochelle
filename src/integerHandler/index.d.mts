@@ -40,6 +40,7 @@ export class BaseIntegerHandler {
 *
 * This encoding scheme is **not** self-synchronising. */
 export class VLVReader extends BaseIntegerHandler {
+	static MASK_VLV: 128;
 	/** Counts the size of a standard MIDI VLV in bytes, up to `16`. Will return `0` when incomplete or failed (expected size goes over `16`). */
 	static size(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Counts the size of an integer to be emitted as a standard MIDI VLV in bytes. Will return 0 when failed. */
@@ -74,6 +75,11 @@ export class VLVHandler extends VLVReader {
 *
 * This encoding scheme is self-synchronising. */
 export class RVLVReader extends BaseIntegerHandler {
+	static MASK_RVLV: 192;
+	static RVLV_START: 192;
+	static RVLV_MIDDLE: 128;
+	static RVLV_END: 64;
+	static RVLV_SINGLE: 0;
 	/** Counts the size of a reversible VLV in bytes, up to `16`. Will return 0 when failed (expected size goes over `16`). */
 	static sizeRVLV(buffer: Uint8Arrays, offset?: number): uint8;
 	/** Counts the size of an integer to be emitted as a reversible VLV in bytes. Will return 0 when failed. */

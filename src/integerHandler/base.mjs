@@ -6,6 +6,12 @@
 
 // Must not import anything.
 
+const bigIntMaxBoundary = (1n << 1024n) - 1n;
+const bigIntCastCeil = (1n << 1023n);
+
+const linkedF64View = new Float64Array(1);
+const linkedU64View = new BigUint64Array(linkedF64View.buffer);
+
 export default class BaseIntegerHandler {
 	static useNative = true;
 	static useStrict = true;
