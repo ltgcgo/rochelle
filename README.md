@@ -1,7 +1,7 @@
 # Rochelle
 > **Warning**
 >
-> As this module is web-compliant standard ESM, to use on Node.js, a minimal web-compliant shim is required. Please check for the minimal import script from _Fly Leaf_.
+> As this module is web-compliant standard ESM, to use on Node.js, the Fly Leaf conformance script (`vergilius.mjs`) or Fly Leaf itself may be required. Please check for the minimal import script from Fly Leaf.
 
 🔪 Stream chunk splitting, binary and numeric manipulation.
 

@@ -7,11 +7,11 @@ const minMemMiB = 64;
 
 const getFreeMemMiB = () => {
 	if (typeof globalThis.Deno?.systemMemoryInfo === "function") {
-		if (Deno.permissions.querySync({
+		if (Deno.permissions?.querySync({
 			"name": "sys",
 			"kind": "systemMemoryInfo"
 		}).state === "granted") {
-			return Math.max(minMemMiB, Math.floor(Deno.systemMemoryInfo().available / 1048576));
+			return Math.max(minMemMiB, Math.floor(Deno.systemMemoryInfo().free / 1048576));
 		} else {
 			return minMemMiB;
 		};
