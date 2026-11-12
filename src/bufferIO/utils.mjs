@@ -11,7 +11,8 @@ const getFreeMemMiB = () => {
 			"name": "sys",
 			"kind": "systemMemoryInfo"
 		}).state === "granted") {
-			return Math.max(minMemMiB, Math.floor(Deno.systemMemoryInfo().free / 1048576));
+			const sysMem = Deno.systemMemoryInfo();
+			return Math.max(minMemMiB, Math.floor(Math.max(sysMem.free, sysMem.available) / 1048576));
 		} else {
 			return minMemMiB;
 		};
